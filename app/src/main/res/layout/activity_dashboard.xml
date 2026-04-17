@@ -1,0 +1,92 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- HEADER -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dashboard HICS"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <!-- CARD POMPA -->
+        <androidx.cardview.widget.CardView
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvPompa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pompa: ON"
+                android:padding="16dp"/>
+        </androidx.cardview.widget.CardView>
+
+        <!-- DATA SENSOR -->
+        <androidx.cardview.widget.CardView
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:padding="16dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="pH: 6.5"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nutrisi: 900 ppm"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Suhu Air: 25°C"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Suhu Udara: 30°C"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Intensitas: 10000 lux"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Air: 80%"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- NAV -->
+        <Button
+            android:id="@+id/btnChart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Grafik"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pengaturan"/>
+    </LinearLayout>
+</ScrollView>
