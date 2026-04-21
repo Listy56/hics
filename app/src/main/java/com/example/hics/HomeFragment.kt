@@ -1,10 +1,13 @@
 package com.example.hics
 
+import android.animation.ValueAnimator
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
@@ -23,13 +26,15 @@ class HomeFragment : Fragment() {
     private lateinit var waterTemp: TextView
     private lateinit var waterLevelPercent: TextView
     private lateinit var waterLevel: LinearLayout
-    private lateinit var baseWaterLevel: LinearLayout
+    private lateinit var baseWaterLevel: FrameLayout
     private var isOn = true
     var suhuUdara = 0.0
     var suhuAir   = 0.0
     var pH        = 0.0
     var nutrisi   = 0
     var intensitasCahaya = 0
+
+    var waterAnimator: ValueAnimator? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,29 +76,21 @@ class HomeFragment : Fragment() {
         baseWaterLevel.post {
             val maxHeight = baseWaterLevel.height
             val newHeight = (level * maxHeight) / 100.0
-            val params    = waterLevel.layoutParams
-            params.height = newHeight.toInt()
-            waterLevel.layoutParams = params
             waterLevelPercent.text  = "$level%"
+            animateWaterLevel(newHeight.toInt())
         }
 
         //ini untuk dummy data
         lifecycleScope.launch {
             while (true) {
-
-                suhuAir     += (-1..1).random()
-                suhuUdara   += (-1..1).random()
+                suhuAir     = (10..39).random().toDouble()
+                suhuUdara   = (10..40).random().toDouble()
                 pH          += listOf(-0.1, 0.0, 0.1).random()
-                nutrisi     += (-20..20).random()
-                intensitasCahaya += (-500..500).random()
-                level       += (-2..2).random()
+                nutrisi     = (200..900).random()
+                intensitasCahaya = (1000..2500).random()
+                level       = (0..100).random()
 
-                suhuAir     = suhuAir.coerceIn(20.0, 40.0)
-                suhuUdara   = suhuUdara.coerceIn(20.0, 45.0)
-                pH          = pH.coerceIn(5.5, 7.5)
-                nutrisi     = nutrisi.coerceIn(500, 1500)
-                intensitasCahaya = intensitasCahaya.coerceIn(0, 20000)
-                level       = level.coerceIn(0, 100)
+                if(level <= 10) level = 10
 
                 phTextView.text = String.format("%.1f", pH)
                 nutrisiTextView.text = nutrisi.toString()
@@ -106,12 +103,8 @@ class HomeFragment : Fragment() {
                 baseWaterLevel.post {
                     val maxHeight = baseWaterLevel.height
                     val newHeight = (level * maxHeight) / 100.0
-
-                    val params = waterLevel.layoutParams
-                    params.height = newHeight.toInt()
-                    waterLevel.layoutParams = params
+                    animateWaterLevel(newHeight.toInt())
                 }
-
                 delay(2000)
             }
         }
@@ -137,5 +130,23 @@ class HomeFragment : Fragment() {
             circle.animate().translationX(0f).setDuration(200).start()
             statusSwitch.text = "OFF"
         }
+    }
+
+    fun animateWaterLevel(targetHeight: Int) {
+        waterAnimator?.cancel()
+        val startHeight = waterLevel.height
+
+        waterAnimator = ValueAnimator.ofInt(startHeight, targetHeight).apply {
+            duration = 300
+            interpolator = DecelerateInterpolator()
+
+            addUpdateListener {
+                val params = waterLevel.layoutParams
+                params.height = it.animatedValue as Int
+                waterLevel.layoutParams = params
+            }
+            start()
+        }
+
     }
 }
