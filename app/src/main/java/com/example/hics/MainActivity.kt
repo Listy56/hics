@@ -1,14 +1,16 @@
 package com.example.hics
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +23,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvChart: TextView
     private lateinit var imgSetting: ImageView
     private lateinit var tvSetting: TextView
+    private lateinit var badgeNotif: TextView
+    private lateinit var btnNotif: ImageView
+
     private var currentFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,16 +35,38 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = getColor(R.color.hijau_start)
         window.navigationBarColor = getColor(R.color.white)
 
-        homeBt = findViewById(R.id.homeBt)
-        chartBt = findViewById(R.id.chartBt)
-        settingBt = findViewById(R.id.settingBt)
-        imgHome = findViewById(R.id.imgHome)
-        tvHome = findViewById(R.id.tvHome)
-        imgChart = findViewById(R.id.imgChart)
-        tvChart = findViewById(R.id.tvChart)
-        imgSetting = findViewById(R.id.imgSetting)
-        tvSetting = findViewById(R.id.tvSetting)
+        homeBt      = findViewById(R.id.homeBt)
+        chartBt     = findViewById(R.id.chartBt)
+        settingBt   = findViewById(R.id.settingBt)
+        imgHome     = findViewById(R.id.imgHome)
+        tvHome      = findViewById(R.id.tvHome)
+        imgChart    = findViewById(R.id.imgChart)
+        tvChart     = findViewById(R.id.tvChart)
+        imgSetting  = findViewById(R.id.imgSetting)
+        tvSetting   = findViewById(R.id.tvSetting)
+        badgeNotif  = findViewById(R.id.badge_notif)
+        btnNotif    = findViewById(R.id.btn_notif)
 
+        //Data dummy untuk notif
+        var notif = 0
+        lifecycleScope.launch {
+            while (true) {
+
+                notif = (0..20).random()
+                if(notif == 0) {
+                    badgeNotif.visibility = View.GONE
+                } else {
+                    badgeNotif.visibility = View.VISIBLE
+                    badgeNotif.text       = notif.toString()
+                }
+
+                delay(2000) // 2 detik
+            }
+        }
+
+        btnNotif.setOnClickListener {
+            startActivity(Intent(this, NotifActivity::class.java))
+        }
 
         if (savedInstanceState == null) {
             currentFragment = HomeFragment()

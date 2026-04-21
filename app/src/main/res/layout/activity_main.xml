@@ -60,11 +60,32 @@
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
                 android:layout_weight="1">
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/notif"
-                    android:layout_marginTop="25dp"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/btn_notif"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="16dp"
+                        android:src="@drawable/notif" />
+
+                    <TextView
+                        android:id="@+id/badge_notif"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignEnd="@id/btn_notif"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/badge_background"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:visibility="visible" />
+                </RelativeLayout>
+
             </LinearLayout>
         </LinearLayout>
 

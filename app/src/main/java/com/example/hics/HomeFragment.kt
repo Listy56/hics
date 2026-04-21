@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import kotlin.math.max
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -23,10 +25,9 @@ class HomeFragment : Fragment() {
     private lateinit var waterLevel: LinearLayout
     private lateinit var baseWaterLevel: LinearLayout
     private var isOn = true
-
-    var suhuUdara = 0
-    var suhuAir   = 0
-    var pH        = 0
+    var suhuUdara = 0.0
+    var suhuAir   = 0.0
+    var pH        = 0.0
     var nutrisi   = 0
     var intensitasCahaya = 0
 
@@ -53,9 +54,9 @@ class HomeFragment : Fragment() {
         baseWaterLevel    = view.findViewById(R.id.baseWaterLevel)
         waterLevelPercent = view.findViewById(R.id.waterLevelPercent)
 
-        suhuAir = 30
-        suhuUdara = 35
-        pH = 6
+        suhuAir = 30.0
+        suhuUdara = 35.0
+        pH = 6.5
         nutrisi = 900
         intensitasCahaya = 10000
 
@@ -70,47 +71,71 @@ class HomeFragment : Fragment() {
         baseWaterLevel.post {
             val maxHeight = baseWaterLevel.height
             val newHeight = (level * maxHeight) / 100.0
-            val params = waterLevel.layoutParams
+            val params    = waterLevel.layoutParams
             params.height = newHeight.toInt()
             waterLevel.layoutParams = params
-            waterLevelPercent.text = "$level%"
+            waterLevelPercent.text  = "$level%"
+        }
+
+        //ini untuk dummy data
+        lifecycleScope.launch {
+            while (true) {
+
+                suhuAir     += (-1..1).random()
+                suhuUdara   += (-1..1).random()
+                pH          += listOf(-0.1, 0.0, 0.1).random()
+                nutrisi     += (-20..20).random()
+                intensitasCahaya += (-500..500).random()
+                level       += (-2..2).random()
+
+                suhuAir     = suhuAir.coerceIn(20.0, 40.0)
+                suhuUdara   = suhuUdara.coerceIn(20.0, 45.0)
+                pH          = pH.coerceIn(5.5, 7.5)
+                nutrisi     = nutrisi.coerceIn(500, 1500)
+                intensitasCahaya = intensitasCahaya.coerceIn(0, 20000)
+                level       = level.coerceIn(0, 100)
+
+                phTextView.text = String.format("%.1f", pH)
+                nutrisiTextView.text = nutrisi.toString()
+                airTemp.text    = "$suhuAir\u00B0C"
+                waterTemp.text  = "$suhuUdara\u00B0C"
+                intensitas.text = intensitasCahaya.toString()
+
+                waterLevelPercent.text = "$level%"
+
+                baseWaterLevel.post {
+                    val maxHeight = baseWaterLevel.height
+                    val newHeight = (level * maxHeight) / 100.0
+
+                    val params = waterLevel.layoutParams
+                    params.height = newHeight.toInt()
+                    waterLevel.layoutParams = params
+                }
+
+                delay(2000)
+            }
         }
 
 
-        if (isOn) {
-            switchPompa.setBackgroundResource(R.drawable.bg_switch_on)
-            circle.animate()
-                .translationX(60f)
-                .setDuration(200)
-                .start()
-            statusSwitch.text = "ON"
-        } else {
-            switchPompa.setBackgroundResource(R.drawable.bg_switch_off)
-            circle.animate()
-                .translationX(0f)
-                .setDuration(200)
-                .start()
-            statusSwitch.text = "OFF"
+        switchPompa.post {
+            updateSwitchUI(isOn)
         }
 
         switchPompa.setOnClickListener {
             isOn = !isOn
+            updateSwitchUI(isOn)
+        }
+    }
 
-            if (isOn) {
-                switchPompa.setBackgroundResource(R.drawable.bg_switch_on)
-                circle.animate()
-                    .translationX(60f)
-                    .setDuration(200)
-                    .start()
-                statusSwitch.text = "ON"
-            } else {
-                switchPompa.setBackgroundResource(R.drawable.bg_switch_off)
-                circle.animate()
-                    .translationX(0f)
-                    .setDuration(200)
-                    .start()
-                statusSwitch.text = "OFF"
-            }
+    fun updateSwitchUI(isOn: Boolean) {
+        if (isOn) {
+            switchPompa.setBackgroundResource(R.drawable.bg_switch_on)
+            circle.animate().translationX(60f).setDuration(200).start()
+            statusSwitch.text = "ON"
+        } else {
+            switchPompa.setBackgroundResource(R.drawable.bg_switch_off)
+            circle.animate().translationX(0f).setDuration(200).start()
+            statusSwitch.text = "OFF"
         }
     }
 }
