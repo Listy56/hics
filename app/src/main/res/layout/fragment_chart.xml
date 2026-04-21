@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/bg"
     android:padding="16dp"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="@drawable/bg_home"
     android:layout_height="match_parent">
 
     <Spinner
