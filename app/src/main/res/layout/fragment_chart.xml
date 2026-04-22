@@ -5,20 +5,62 @@
     android:background="@drawable/bg_home"
     android:layout_height="match_parent">
 
-    <Spinner
-        android:id="@+id/spinnerData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Spinner
-        android:id="@+id/spinnerPeriode"
+    <!-- CARD -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"/>
+        android:orientation="vertical"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_card_chart"
+        android:padding="16dp"
+        android:elevation="8dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:text="Chart akan tampil di sini"
-        android:gravity="center"/>
+        <!-- HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:text="Line Chart"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#00ACC1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <!-- Spinner kiri -->
+            <Spinner
+                android:id="@+id/spinnerData"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_spinner_custom"
+                android:paddingStart="12dp"
+                android:paddingEnd="30dp"
+                android:gravity="center_vertical"/>
+
+            <!-- Spinner kanan -->
+            <Spinner
+                android:id="@+id/spinnerPeriode"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_spinner_outline"
+                android:paddingStart="12dp"
+                android:paddingEnd="30dp"
+                android:gravity="center_vertical"/>
+        </LinearLayout>
+
+        <!-- CHART -->
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
+
 </LinearLayout>
