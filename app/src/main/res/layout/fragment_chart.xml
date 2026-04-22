@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@drawable/bg_home"
+    android:layout_height="match_parent">
+
+    <Spinner
+        android:id="@+id/spinnerData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Spinner
+        android:id="@+id/spinnerPeriode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:text="Chart akan tampil di sini"
+        android:gravity="center"/>
+</LinearLayout>

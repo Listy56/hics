@@ -7,5 +7,9 @@
     <color name="text">#1C1C1C</color>
     <color name="white">#FFFFFF</color>
     <color name="btn_bg">#EDEDED</color>
+    <color name="hijau">#0BAE9D</color>
+    <color name="hijau_start">#61DD94</color>
+    <color name="hijau_end">#01A6A4</color>
+    <color name="abu">#BDBDBD</color>
     <color name="text_secondary">#E0F2F1</color>
 </resources>
