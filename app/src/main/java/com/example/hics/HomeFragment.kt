@@ -59,10 +59,10 @@ class HomeFragment : Fragment() {
         baseWaterLevel    = view.findViewById(R.id.baseWaterLevel)
         waterLevelPercent = view.findViewById(R.id.waterLevelPercent)
 
-        suhuAir = 30.0
+        suhuAir   = 30.0
         suhuUdara = 35.0
-        pH = 6.5
-        nutrisi = 900
+        pH        = 6.5
+        nutrisi   = 900
         intensitasCahaya = 10000
 
         phTextView.text         = pH.toString()
@@ -90,15 +90,18 @@ class HomeFragment : Fragment() {
                 intensitasCahaya = (1000..2500).random()
                 level       = (0..100).random()
 
-                if(level <= 10) level = 10
-
                 phTextView.text = String.format("%.1f", pH)
                 nutrisiTextView.text = nutrisi.toString()
                 airTemp.text    = "$suhuAir\u00B0C"
                 waterTemp.text  = "$suhuUdara\u00B0C"
                 intensitas.text = intensitasCahaya.toString()
 
-                waterLevelPercent.text = "$level%"
+                if(level <= 15) {
+                    level = 15
+                    waterLevelPercent.text = "<$level%"
+                } else {
+                    waterLevelPercent.text = "$level%"
+                }
 
                 baseWaterLevel.post {
                     val maxHeight = baseWaterLevel.height
@@ -108,7 +111,6 @@ class HomeFragment : Fragment() {
                 delay(2000)
             }
         }
-
 
         switchPompa.post {
             updateSwitchUI(isOn)
@@ -147,6 +149,5 @@ class HomeFragment : Fragment() {
             }
             start()
         }
-
     }
 }

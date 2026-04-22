@@ -33,12 +33,16 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation("androidx.cardview:cardview:1.0.0")
+    implementation(libs.androidx.cardview)
+    implementation(libs.mpandroidchart)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)

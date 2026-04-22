@@ -1,24 +1,137 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="16dp"
-    android:orientation="vertical"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/bg_home"
-    android:layout_height="match_parent">
+    android:fillViewport="true">
 
-    <Spinner
-        android:id="@+id/spinnerData"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Spinner
-        android:id="@+id/spinnerPeriode"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"/>
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:text="Chart akan tampil di sini"
-        android:gravity="center"/>
-</LinearLayout>
+        <!-- Card utama -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardChart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Header Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <!-- Judul -->
+                    <TextView
+                        android:id="@+id/tvChartTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Line Chart"
+                        android:textColor="@color/hijau"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-medium" />
+
+                    <!--
+                        ══════════════════════════════════════
+                        SPINNER DATA TYPE — pill teal
+                        LinearLayout sebagai wrapper pill,
+                        Spinner + ImageView arrow di dalamnya
+                        ══════════════════════════════════════
+                    -->
+                    <LinearLayout
+                        android:id="@+id/layoutSpinnerData"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_pill_teal"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="10dp"
+                        android:layout_marginEnd="8dp"
+                        android:minWidth="100dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerDataType"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            android:layout_weight="1"
+                            android:popupBackground="@drawable/bg_dropdown_item"
+                            android:spinnerMode="dropdown" />
+
+                        <ImageView
+                            android:id="@+id/ivArrowData"
+                            android:layout_width="7dp"
+                            android:layout_height="7dp"
+                            android:layout_marginStart="4dp"
+                            android:src="@drawable/arrow_white"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="dropdown" />
+
+                    </LinearLayout>
+
+                    <!--
+                        ══════════════════════════════════════
+                        SPINNER PERIODE — pill putih + stroke
+                        ══════════════════════════════════════
+                    -->
+                    <LinearLayout
+                        android:id="@+id/layoutSpinnerPeriod"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_pill_white_stroke"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="10dp"
+                        android:minWidth="100dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerPeriod"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:spinnerMode="dropdown" />
+
+                        <ImageView
+                            android:id="@+id/ivArrowPeriod"
+                            android:layout_width="7dp"
+                            android:layout_height="7dp"
+                            android:layout_marginStart="4dp"
+                            android:src="@drawable/arrow_grey"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="dropdown" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- MPAndroidChart -->
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/lineChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
