@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HICS</string>
+    <string name="account_data"><![CDATA[Account & Data]]></string>
 </resources>

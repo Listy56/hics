@@ -18,12 +18,12 @@ class SplashActivity : AppCompatActivity() {
         window.navigationBarColor = getColor(R.color.hijau_end)
 
 
-        val btnMulai = findViewById<Button>(R.id.btnMulai)
+//        val btnMulai = findViewById<Button>(R.id.btnMulai)
 
-        btnMulai.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
+//        btnMulai.setOnClickListener {
+//            startActivity(Intent(this, MainActivity::class.java))
+//            finish()
+//        }
 
         Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(this, MainActivity::class.java)
