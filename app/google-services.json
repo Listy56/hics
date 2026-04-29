@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "781793565461",
+    "project_id": "hics-976fb",
+    "storage_bucket": "hics-976fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781793565461:android:ea43bdf2d9a0fbdc99e71c",
+        "android_client_info": {
+          "package_name": "com.example.hics"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuNwSk86meWK0na86VfJ76Iyyg3yiAMNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
