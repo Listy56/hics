@@ -1,8 +1,10 @@
 package com.example.hics
 
 import android.animation.ValueAnimator
+import android.content.Context.MODE_PRIVATE
 import androidx.fragment.app.Fragment
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +12,13 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -18,8 +26,6 @@ class HomeFragment : Fragment() {
 
     private lateinit var phTextView: TextView
     private lateinit var nutrisiTextView: TextView
-    private lateinit var switchPompa: LinearLayout
-    private lateinit var circle: View
     private lateinit var statusSwitch: TextView
     private lateinit var intensitas: TextView
     private lateinit var airTemp: TextView
@@ -28,11 +34,15 @@ class HomeFragment : Fragment() {
     private lateinit var waterLevel: LinearLayout
     private lateinit var baseWaterLevel: FrameLayout
     private var isOn = true
+    private var deviceID: String? = ""
+    private var firebaseDatabase = FirebaseDatabase.getInstance()
     var suhuUdara = 0.0
     var suhuAir   = 0.0
     var pH        = 0.0
     var nutrisi   = 0
     var intensitasCahaya = 0
+
+    var level   = 0.0
 
     var waterAnimator: ValueAnimator? = null
 
@@ -47,10 +57,12 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            requireActivity().finish()
+        }
+
         phTextView        = view.findViewById(R.id.tvPh)
         nutrisiTextView   = view.findViewById(R.id.tvNutrisi)
-        switchPompa       = view.findViewById(R.id.switchPompa)
-        circle            = view.findViewById(R.id.circle)
         statusSwitch      = view.findViewById(R.id.statusSwitch)
         intensitas        = view.findViewById(R.id.tvIntensitas)
         airTemp           = view.findViewById(R.id.airTemp)
@@ -59,78 +71,51 @@ class HomeFragment : Fragment() {
         baseWaterLevel    = view.findViewById(R.id.baseWaterLevel)
         waterLevelPercent = view.findViewById(R.id.waterLevelPercent)
 
-        suhuAir   = 30.0
-        suhuUdara = 35.0
-        pH        = 6.5
-        nutrisi   = 900
-        intensitasCahaya = 10000
+        val accPref      = requireActivity().getSharedPreferences("ACCOUNT", MODE_PRIVATE)
+        deviceID         = accPref.getString("deviceID", "")
 
-        phTextView.text         = pH.toString()
-        nutrisiTextView.text    = nutrisi.toString()
-        airTemp.text            = "$suhuAir\u00B0C"
-        waterTemp.text          = "$suhuUdara\u00B0C"
-        intensitas.text         = intensitasCahaya.toString()
+        Log.d("MonitoringFragment", "DeviceID: $deviceID")
 
-        var level = 80
+        var baseFirebase = firebaseDatabase.getReference("Hics")
 
-        baseWaterLevel.post {
-            val maxHeight = baseWaterLevel.height
-            val newHeight = (level * maxHeight) / 100.0
-            waterLevelPercent.text  = "$level%"
-            animateWaterLevel(newHeight.toInt())
-        }
+        if (deviceID != null && deviceID.toString().isNotEmpty()) {
+            baseFirebase.child(deviceID.toString()).addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        suhuAir           = snapshot.child("dataStream").child("waterTemp").value.toString().toDouble()
+                        suhuUdara         = snapshot.child("dataStream").child("airTemp").value.toString().toDouble()
+                        pH                = snapshot.child("dataStream").child("pH").value.toString().toDouble()
+                        nutrisi           = snapshot.child("dataStream").child("ppm").value.toString().toInt()
+                        level             = snapshot.child("dataStream").child("waterLevel").value.toString().toDouble()
+                        intensitasCahaya  = snapshot.child("dataStream").child("light").value.toString().toInt()
+                        isOn              = snapshot.child("control").child("waterPump").value.toString().toBoolean()
 
-        //ini untuk dummy data
-        lifecycleScope.launch {
-            while (true) {
-                suhuAir     = (10..39).random().toDouble()
-                suhuUdara   = (10..40).random().toDouble()
-                pH          += listOf(-0.1, 0.0, 0.1).random()
-                nutrisi     = (200..900).random()
-                intensitasCahaya = (1000..2500).random()
-                level       = (0..100).random()
+                        if(level < 15) level = 15.0
+                        else if (level > 100) level = 100.0
 
-                phTextView.text = String.format("%.1f", pH)
-                nutrisiTextView.text = nutrisi.toString()
-                airTemp.text    = "$suhuAir\u00B0C"
-                waterTemp.text  = "$suhuUdara\u00B0C"
-                intensitas.text = intensitasCahaya.toString()
+                        phTextView.text         = pH.toString()
+                        nutrisiTextView.text    = nutrisi.toString()
+                        airTemp.text            = "$suhuAir\u00B0C"
+                        waterTemp.text          = "$suhuUdara\u00B0C"
+                        intensitas.text         = intensitasCahaya.toString()
 
-                if(level <= 15) {
-                    level = 15
-                    waterLevelPercent.text = "<$level%"
-                } else {
-                    waterLevelPercent.text = "$level%"
+                        if(isOn) statusSwitch.text = "ON"
+                        else statusSwitch.text     = "OFF"
+
+                        baseWaterLevel.post {
+                            val maxHeight           = baseWaterLevel.height
+                            val newHeight           = (level * maxHeight) / 100.0
+                            waterLevelPercent.text  = "$level%"
+                            animateWaterLevel(newHeight.toInt())
+                        }
+                    }
                 }
 
-                baseWaterLevel.post {
-                    val maxHeight = baseWaterLevel.height
-                    val newHeight = (level * maxHeight) / 100.0
-                    animateWaterLevel(newHeight.toInt())
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
                 }
-                delay(2000)
-            }
-        }
+            })
 
-        switchPompa.post {
-            updateSwitchUI(isOn)
-        }
-
-        switchPompa.setOnClickListener {
-            isOn = !isOn
-            updateSwitchUI(isOn)
-        }
-    }
-
-    fun updateSwitchUI(isOn: Boolean) {
-        if (isOn) {
-            switchPompa.setBackgroundResource(R.drawable.bg_switch_on)
-            circle.animate().translationX(60f).setDuration(200).start()
-            statusSwitch.text = "ON"
-        } else {
-            switchPompa.setBackgroundResource(R.drawable.bg_switch_off)
-            circle.animate().translationX(0f).setDuration(200).start()
-            statusSwitch.text = "OFF"
         }
     }
 
@@ -139,11 +124,11 @@ class HomeFragment : Fragment() {
         val startHeight = waterLevel.height
 
         waterAnimator = ValueAnimator.ofInt(startHeight, targetHeight).apply {
-            duration = 300
+            duration     = 300
             interpolator = DecelerateInterpolator()
 
             addUpdateListener {
-                val params = waterLevel.layoutParams
+                val params    = waterLevel.layoutParams
                 params.height = it.animatedValue as Int
                 waterLevel.layoutParams = params
             }

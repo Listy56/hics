@@ -1,14 +1,22 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.hics
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -25,6 +33,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvSetting: TextView
     private lateinit var badgeNotif: TextView
     private lateinit var btnNotif: ImageView
+
+    private var indexAcc: Int?    = 0
+
+    private var firebaseDatabase = FirebaseDatabase.getInstance()
 
     private var currentFragment: Fragment? = null
 
@@ -57,6 +69,39 @@ class MainActivity : AppCompatActivity() {
         tvSetting   = findViewById(R.id.tvSetting)
         badgeNotif  = findViewById(R.id.badge_notif)
         btnNotif    = findViewById(R.id.btn_notif)
+
+//        val accPref      = getSharedPreferences("ACCOUNT", MODE_PRIVATE)
+//        indexAcc         = accPref.getInt("index", -1)
+
+        //debug
+        indexAcc = 1
+
+        val accFirebase = firebaseDatabase.getReference("User")
+
+        Log.d("MainActivity", "indexAcc: $indexAcc")
+
+        accFirebase.child("user_$indexAcc").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val id   = snapshot.child("id").value.toString()
+
+                    getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
+                        .putString("deviceID", id ?: "")
+                        .putInt("index", indexAcc ?: -1)
+                        .commit()
+
+                } else {
+                    getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
+                        .putString("deviceID",  "")
+                        .putInt("index", -1)
+                        .commit()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@MainActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
 
         //Data dummy untuk notif
         var notif = 0
