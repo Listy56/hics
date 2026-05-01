@@ -4,10 +4,13 @@
 
     <!-- Background -->
     <ImageView
+        android:id="@+id/bgSplash"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/background" />
+
+
 
     <!-- Konten Tengah -->
     <LinearLayout
@@ -19,45 +22,32 @@
 
         <!-- Logo -->
         <ImageView
+            android:id="@+id/logoSplash"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@drawable/logo"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:elevation="8dp"/>
 
-
-        <!-- Text HICS -->
+        <!-- Title -->
         <TextView
+            android:id="@+id/titleSplash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="HICS"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:textSize="26sp"
-            android:layout_gravity="center"/>
+            android:textSize="28sp"/>
 
         <!-- Subtitle -->
         <TextView
+            android:id="@+id/subtitleSplash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hydro-IoT Control System"
-            android:textColor="@color/text_secondary"
+            android:textColor="#DDFFFFFF"
             android:textSize="14sp"
-            android:layout_marginTop="4dp"
-            android:layout_gravity="center"/>
-
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
-
-    <!-- Button Mulai -->
-<!--    <Button-->
-<!--        android:id="@+id/btnMulai"-->
-<!--        android:layout_width="200dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:text="Mulai"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:backgroundTint="@color/btn_bg"-->
-<!--        android:textColor="@android:color/black"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginBottom="40dp"/>-->
 
 </RelativeLayout>

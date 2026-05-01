@@ -63,10 +63,10 @@
 
             <!-- Nama -->
             <EditText
-                android:id="@+id/etName"
+                android:id="@+id/etUsername"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:hint="Full Name"
+                android:hint="Username"
                 android:background="@drawable/input_bg"
                 android:padding="12dp"
                 android:layout_marginHorizontal="10dp"
@@ -79,18 +79,6 @@
                 android:layout_height="45dp"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
-                android:background="@drawable/input_bg"
-                android:padding="12dp"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Phone -->
-            <EditText
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:hint="Phone Number"
-                android:inputType="phone"
                 android:background="@drawable/input_bg"
                 android:padding="12dp"
                 android:layout_marginHorizontal="10dp"

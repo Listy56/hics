@@ -1,52 +1,54 @@
 package com.example.hics
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class RegisterActivity : AppCompatActivity() {
 
-    @SuppressLint("WrongViewCast", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        val etName = findViewById<EditText>(R.id.etName)
+        val etUsername = findViewById<EditText>(R.id.etUsername)
         val etEmail = findViewById<EditText>(R.id.etEmail)
-        val etPhone = findViewById<EditText>(R.id.etPhone)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.etConfirmPassword)
 
         val btnRegister = findViewById<Button>(R.id.btnRegister)
-        val btnBack = findViewById<TextView>(R.id.btnBack)
+        val btnBack = findViewById<ImageView>(R.id.btnBack)
         val tvLogin = findViewById<TextView>(R.id.tvLogin)
         val btnGoogle = findViewById<Button>(R.id.btnGoogle)
 
-        // 🔙 Back ke login
+        val auth = FirebaseAuth.getInstance()
+        val database = FirebaseDatabase.getInstance().reference
+
+        // 🔙 Back
         btnBack.setOnClickListener {
             finish()
         }
 
-        // 🔁 Pindah ke login
+        // 🔁 ke Login
         tvLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
 
-        // 🔐 Register manual
+        // 🔐 REGISTER
         btnRegister.setOnClickListener {
 
-            val name = etName.text.toString().trim()
+            val username = etUsername.text.toString().trim()
             val email = etEmail.text.toString().trim()
-            val phone = etPhone.text.toString().trim()
             val password = etPassword.text.toString()
             val confirm = etConfirmPassword.text.toString()
 
+            // 🔥 VALIDASI INPUT
             when {
-                name.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() -> {
+                username.isEmpty() || email.isEmpty() || password.isEmpty() -> {
                     Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show()
                 }
 
@@ -63,15 +65,88 @@ class RegisterActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    Toast.makeText(this, "Register berhasil", Toast.LENGTH_SHORT).show()
-                    finish() // balik ke login
+
+                    btnRegister.isEnabled = false
+
+                    // 🔥 1. CEK DATA DUPLIKAT DULU
+                    database.child("User")
+                        .get()
+                        .addOnSuccessListener { snapshot ->
+
+                            var usernameExist = false
+                            var emailExist = false
+
+                            for (userSnap in snapshot.children) {
+                                val dbUsername = userSnap.child("username").value.toString()
+                                val dbEmail = userSnap.child("email").value.toString()
+
+                                if (username == dbUsername) usernameExist = true
+                                if (email == dbEmail) emailExist = true
+                            }
+
+                            when {
+                                usernameExist -> {
+                                    btnRegister.isEnabled = true
+                                    Toast.makeText(this, "Username sudah terdaftar", Toast.LENGTH_SHORT).show()
+                                }
+
+                                emailExist -> {
+                                    btnRegister.isEnabled = true
+                                    Toast.makeText(this, "Email sudah terdaftar", Toast.LENGTH_SHORT).show()
+                                }
+
+                                else -> {
+                                    // 🔥 2. REGISTER KE FIREBASE AUTH
+                                    auth.createUserWithEmailAndPassword(email, password)
+                                        .addOnSuccessListener {
+
+                                            // 🔥 3. SIMPAN KE DATABASE
+                                            var index = 1
+                                            var key: String
+
+                                            do {
+                                                key = "user_$index"
+                                                index++
+                                            } while (snapshot.hasChild(key))
+
+                                            val userMap = HashMap<String, Any>()
+                                            userMap["username"] = username
+                                            userMap["email"] = email
+                                            userMap["id"] = ""
+
+                                            database.child("User")
+                                                .child(key)
+                                                .setValue(userMap)
+                                                .addOnSuccessListener {
+                                                    Toast.makeText(this, "Register berhasil", Toast.LENGTH_SHORT).show()
+
+                                                    startActivity(Intent(this, MainActivity::class.java))
+                                                    finish()
+                                                }
+                                                .addOnFailureListener {
+                                                    btnRegister.isEnabled = true
+                                                    Toast.makeText(this, "Gagal simpan data", Toast.LENGTH_SHORT).show()
+                                                }
+                                        }
+                                        .addOnFailureListener {
+                                            btnRegister.isEnabled = true
+                                            Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
+
+                        }
+                        .addOnFailureListener {
+                            btnRegister.isEnabled = true
+                            Toast.makeText(this, "Gagal cek data", Toast.LENGTH_SHORT).show()
+                        }
                 }
             }
         }
 
-        // Register dengan Google (dummy dulu)
+        // Google (dummy)
         btnGoogle.setOnClickListener {
-            Toast.makeText(this, "Login dengan Google (belum diimplementasikan)", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Login Google belum tersedia", Toast.LENGTH_SHORT).show()
         }
     }
 }

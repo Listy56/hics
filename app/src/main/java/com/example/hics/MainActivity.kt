@@ -31,6 +31,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val root = findViewById<View>(R.id.main)
+
+        // awal transparan
+        root.alpha = 0f
+
+        // animasi muncul
+        root.animate()
+            .alpha(1f)
+            .setDuration(300)
+            .start()
+
 
         window.statusBarColor = getColor(R.color.hijau_start)
         window.navigationBarColor = getColor(R.color.white)
