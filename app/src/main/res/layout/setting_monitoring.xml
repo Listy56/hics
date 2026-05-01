@@ -31,7 +31,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingRight="0dp"
+                    android:paddingRight="10dp"
                     android:paddingLeft="10dp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
@@ -82,7 +82,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="3.5"
                                     android:gravity="right"
-                                    android:layout_marginRight="10dp"
                                     android:orientation="horizontal">
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -98,12 +97,14 @@
                                         android:layout_height="36dp"
                                         android:background="@drawable/bg_pill_white_stroke">
                                         <EditText
+                                            android:id="@+id/phMin"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:inputType="numberDecimal"
                                             android:padding="8dp"
                                             android:textSize="14sp"
                                             android:textColor="@color/hijau_end"
+                                            android:textColorHint="@color/hijau_end"
                                             android:textAlignment="center"
                                             android:fontFamily="@font/poppinsbold"
                                             android:background="@drawable/edittext_bg"/>
@@ -125,12 +126,14 @@
                                         android:layout_marginRight="0dp"
                                         android:background="@drawable/bg_pill_white_stroke">
                                         <EditText
+                                            android:id="@+id/phMax"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:inputType="numberDecimal"
                                             android:padding="8dp"
                                             android:textSize="14sp"
                                             android:textColor="@color/hijau_end"
+                                            android:textColorHint="@color/hijau_end"
                                             android:fontFamily="@font/poppinsbold"
                                             android:textAlignment="center"
                                             android:background="@drawable/edittext_bg"/>
@@ -184,7 +187,6 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="3.3"
                                     android:gravity="right"
-                                    android:layout_marginRight="10dp"
                                     android:orientation="horizontal">
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -200,12 +202,14 @@
                                         android:layout_height="36dp"
                                         android:background="@drawable/bg_pill_white_stroke">
                                         <EditText
+                                            android:id="@+id/ppmMin"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:inputType="numberDecimal"
                                             android:padding="8dp"
                                             android:textSize="14sp"
                                             android:textColor="@color/hijau_end"
+                                            android:textColorHint="@color/hijau_end"
                                             android:fontFamily="@font/poppinsbold"
                                             android:textAlignment="center"
                                             android:background="@drawable/edittext_bg"/>
@@ -224,15 +228,16 @@
                                     <LinearLayout
                                         android:layout_width="80dp"
                                         android:layout_height="36dp"
-                                        android:layout_marginRight="0dp"
                                         android:background="@drawable/bg_pill_white_stroke">
                                         <EditText
+                                            android:id="@+id/ppmMax"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:inputType="numberDecimal"
                                             android:padding="8dp"
                                             android:textSize="14sp"
                                             android:textColor="@color/hijau_end"
+                                            android:textColorHint="@color/hijau_end"
                                             android:fontFamily="@font/poppinsbold"
                                             android:textAlignment="center"
                                             android:background="@drawable/edittext_bg"/>
@@ -255,164 +260,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingRight="0dp"
                     android:paddingLeft="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Notification"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/poppinsbold"
-                        android:textColor="@color/hijau_end"/>
-
-                    <!--            Notification-->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:orientation="horizontal">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="8dp"
-                            android:src="@drawable/ph"/>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppinmedium"
-                                android:layout_gravity="center_vertical"
-                                android:textColor="@color/hijau_end"
-                                android:textSize="14sp"
-                                android:layout_weight="1"
-                                android:text="Notification Alert"/>
-                            <LinearLayout
-                                android:id="@+id/switchNotif"
-                                android:layout_width="50dp"
-                                android:layout_height="26dp"
-                                android:padding="3dp"
-                                android:layout_marginRight="10dp"
-                                android:orientation="horizontal"
-                                android:background="@drawable/bg_switch_off">
-                                <View
-                                    android:id="@+id/circleNotif"
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:background="@drawable/bg_circle"/>
-                            </LinearLayout>
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="10dp"
-                android:layout_marginTop="20dp"
-                app:cardElevation="2dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingRight="0dp"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Interval Update"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/poppinsbold"
-                        android:textColor="@color/hijau_end"/>
-
-                    <!--            Interval-->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="0dp"
-                        android:layout_marginBottom="5dp"
-                        android:orientation="horizontal">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="8dp"
-                            android:src="@drawable/ph"/>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppinmedium"
-                                android:textColor="@color/hijau_end"
-                                android:textSize="14sp"
-                                android:layout_weight="1"
-                                android:layout_gravity="center_vertical"
-                                android:text="Change Interval Update"/>
-                            <LinearLayout
-                                android:id="@+id/layoutSpinnerInterval"
-                                android:layout_width="100dp"
-                                android:layout_height="36dp"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:background="@drawable/bg_pill_white_stroke"
-                                android:paddingStart="14dp"
-                                android:layout_marginRight="10dp"
-                                android:paddingEnd="10dp"
-                                android:minWidth="100dp">
-
-                                <Spinner
-                                    android:id="@+id/spinnerInterval"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@null"
-                                    android:spinnerMode="dropdown" />
-
-                                <ImageView
-                                    android:layout_width="7dp"
-                                    android:layout_height="7dp"
-                                    android:layout_marginStart="4dp"
-                                    android:src="@drawable/arrow_grey"
-                                    android:scaleType="fitCenter"
-                                    android:contentDescription="dropdown" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="10dp"
-                android:layout_marginTop="20dp"
-                app:cardElevation="2dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingRight="0dp"
-                    android:paddingLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:paddingTop="5dp"
                     android:orientation="vertical">
                     <TextView
@@ -462,11 +311,10 @@
                                     android:background="@drawable/bg_pill_white_stroke"
                                     android:paddingStart="14dp"
                                     android:paddingEnd="10dp"
-                                    android:layout_marginRight="10dp"
                                     android:minWidth="100dp">
 
                                     <Spinner
-                                        android:id="@+id/spinnerpH"
+                                        android:id="@+id/spinnerSuhu"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_weight="1"
@@ -526,7 +374,6 @@
                                 android:background="@drawable/bg_pill_white_stroke"
                                 android:paddingStart="14dp"
                                 android:paddingEnd="10dp"
-                                android:layout_marginRight="10dp"
                                 android:minWidth="100dp">
 
                                 <Spinner
@@ -553,6 +400,163 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="10dp"
+                android:layout_marginTop="20dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingRight="0dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Interval Update"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppinsbold"
+                        android:textColor="@color/hijau_end"/>
+
+                    <!--            Interval-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="8dp"
+                            android:src="@drawable/interval"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppinmedium"
+                                android:textColor="@color/hijau_end"
+                                android:textSize="14sp"
+                                android:layout_weight="1"
+                                android:layout_gravity="center_vertical"
+                                android:text="Change Interval Update (s)"/>
+                            <LinearLayout
+                                android:id="@+id/layoutSpinnerInterval"
+                                android:layout_width="100dp"
+                                android:layout_height="36dp"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:background="@drawable/bg_pill_white_stroke"
+                                android:paddingStart="14dp"
+                                android:layout_marginRight="10dp"
+                                android:paddingEnd="10dp"
+                                android:minWidth="100dp">
+
+                                <Spinner
+                                    android:id="@+id/spinnerInterval"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="@null"
+                                    android:spinnerMode="dropdown" />
+
+                                <ImageView
+                                    android:layout_width="7dp"
+                                    android:layout_height="7dp"
+                                    android:layout_marginStart="4dp"
+                                    android:src="@drawable/arrow_grey"
+                                    android:scaleType="fitCenter"
+                                    android:contentDescription="dropdown" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="10dp"
+                android:layout_marginTop="20dp"
+                app:cardElevation="2dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingRight="0dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notification"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppinsbold"
+                        android:textColor="@color/hijau_end"/>
+
+                    <!--            Notification-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="8dp"
+                            android:src="@drawable/notif_kecil"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/poppinmedium"
+                                android:layout_gravity="center_vertical"
+                                android:textColor="@color/hijau_end"
+                                android:textSize="14sp"
+                                android:layout_weight="1"
+                                android:text="Notification Alert"/>
+                            <LinearLayout
+                                android:id="@+id/switchNotif"
+                                android:layout_width="50dp"
+                                android:layout_height="26dp"
+                                android:padding="3dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="horizontal"
+                                android:background="@drawable/bg_switch_off">
+                                <View
+                                    android:id="@+id/circleNotif"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:background="@drawable/bg_circle"/>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/hijau_end"
