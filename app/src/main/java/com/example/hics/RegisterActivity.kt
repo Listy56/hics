@@ -27,18 +27,13 @@ class RegisterActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         val database = FirebaseDatabase.getInstance().reference
 
-        // 🔙 Back
-        btnBack.setOnClickListener {
-            finish()
-        }
+        btnBack.setOnClickListener { finish() }
 
-        // 🔁 ke Login
         tvLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
 
-        // 🔐 REGISTER
         btnRegister.setOnClickListener {
 
             val username = etUsername.text.toString().trim()
@@ -46,7 +41,6 @@ class RegisterActivity : AppCompatActivity() {
             val password = etPassword.text.toString()
             val confirm = etConfirmPassword.text.toString()
 
-            // 🔥 VALIDASI INPUT
             when {
                 username.isEmpty() || email.isEmpty() || password.isEmpty() -> {
                     Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show()
@@ -68,7 +62,7 @@ class RegisterActivity : AppCompatActivity() {
 
                     btnRegister.isEnabled = false
 
-                    // 🔥 1. CEK DATA DUPLIKAT DULU
+                    // 🔥 CEK DUPLIKAT
                     database.child("User")
                         .get()
                         .addOnSuccessListener { snapshot ->
@@ -77,7 +71,7 @@ class RegisterActivity : AppCompatActivity() {
                             var emailExist = false
 
                             for (userSnap in snapshot.children) {
-                                val dbUsername = userSnap.child("username").value.toString()
+                                val dbUsername = userSnap.child("userName").value.toString()
                                 val dbEmail = userSnap.child("email").value.toString()
 
                                 if (username == dbUsername) usernameExist = true
@@ -96,11 +90,12 @@ class RegisterActivity : AppCompatActivity() {
                                 }
 
                                 else -> {
-                                    // 🔥 2. REGISTER KE FIREBASE AUTH
+
+                                    // 🔥 REGISTER AUTH
                                     auth.createUserWithEmailAndPassword(email, password)
                                         .addOnSuccessListener {
 
-                                            // 🔥 3. SIMPAN KE DATABASE
+                                            // 🔥 BUAT KEY user_X
                                             var index = 1
                                             var key: String
 
@@ -110,14 +105,24 @@ class RegisterActivity : AppCompatActivity() {
                                             } while (snapshot.hasChild(key))
 
                                             val userMap = HashMap<String, Any>()
-                                            userMap["username"] = username
+                                            userMap["userName"] = username
                                             userMap["email"] = email
                                             userMap["id"] = ""
 
+                                            // 🔥 SIMPAN KE DATABASE + SIMPAN INDEX
                                             database.child("User")
                                                 .child(key)
                                                 .setValue(userMap)
                                                 .addOnSuccessListener {
+
+                                                    // 🔥 ambil index dari key
+                                                    val indexFix = key.substringAfter("_").toIntOrNull()
+
+                                                    // 🔥 simpan ke SharedPreferences
+                                                    getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
+                                                        .putInt("index", indexFix ?: -1)
+                                                        .apply()
+
                                                     Toast.makeText(this, "Register berhasil", Toast.LENGTH_SHORT).show()
 
                                                     startActivity(Intent(this, MainActivity::class.java))
@@ -144,7 +149,6 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-        // Google (dummy)
         btnGoogle.setOnClickListener {
             Toast.makeText(this, "Login Google belum tersedia", Toast.LENGTH_SHORT).show()
         }

@@ -13,7 +13,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val etEmail = findViewById<EditText>(R.id.etEmail) // sekarang bisa email / username
+        val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val tvForgot = findViewById<TextView>(R.id.tvForgot)
@@ -21,18 +21,18 @@ class LoginActivity : AppCompatActivity() {
 
         val auth = FirebaseAuth.getInstance()
         val database = FirebaseDatabase.getInstance().reference
+
         tvForgot.setOnClickListener {
             startActivity(Intent(this, ForgotPasswordActivity::class.java))
         }
-        // pindah ke register
+
         tvSignUp.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
-
         btnLogin.setOnClickListener {
 
-            val input = etEmail.text.toString().trim() // bisa email / username
+            val input = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
             if (input.isEmpty() || password.isEmpty()) {
@@ -42,15 +42,14 @@ class LoginActivity : AppCompatActivity() {
 
             btnLogin.isEnabled = false
 
-            // 🔥 CEK: input ini email atau username
             if (android.util.Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
 
-                // ✅ langsung login kalau email
-                loginWithEmail(auth, input, password)
+                // ✅ LOGIN EMAIL
+                loginWithEmail(auth, input, password, null)
 
             } else {
 
-                // 🔥 cari email dari username di database
+                // 🔥 CARI EMAIL DARI USERNAME
                 database.child("User")
                     .get()
                     .addOnSuccessListener { snapshot ->
@@ -58,7 +57,7 @@ class LoginActivity : AppCompatActivity() {
                         var emailDitemukan: String? = null
 
                         for (userSnap in snapshot.children) {
-                            val dbUsername = userSnap.child("username").value.toString()
+                            val dbUsername = userSnap.child("userName").value.toString()
                             val dbEmail = userSnap.child("email").value.toString()
 
                             if (input == dbUsername) {
@@ -68,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
                         }
 
                         if (emailDitemukan != null) {
-                            loginWithEmail(auth, emailDitemukan, password)
+                            loginWithEmail(auth, emailDitemukan, password, input)
                         } else {
                             btnLogin.isEnabled = true
                             Toast.makeText(this, "Username tidak ditemukan", Toast.LENGTH_SHORT).show()
@@ -83,16 +82,56 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // 🔥 FUNCTION LOGIN EMAIL
-    private fun loginWithEmail(auth: FirebaseAuth, email: String, password: String) {
+    // 🔥 FUNCTION LOGIN BARU (SUDAH ADA INDEX)
+    private fun loginWithEmail(
+        auth: FirebaseAuth,
+        email: String,
+        password: String,
+        inputUsername: String?
+    ) {
 
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
 
-                Toast.makeText(this, "Login berhasil", Toast.LENGTH_SHORT).show()
+                val database = FirebaseDatabase.getInstance().reference
 
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+                database.child("User")
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+
+                        var foundIndex: Int? = null
+
+                        for (userSnap in snapshot.children) {
+
+                            val dbEmail = userSnap.child("email").value.toString()
+                            val dbUsername = userSnap.child("userName").value.toString()
+
+                            if (dbEmail == email || dbUsername == inputUsername) {
+
+                                val key = userSnap.key // user_1
+                                val index = key?.substringAfter("_")?.toIntOrNull()
+
+                                foundIndex = index
+                                break
+                            }
+                        }
+
+                        if (foundIndex != null) {
+
+                            // 🔥 SIMPAN INDEX
+                            getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
+                                .putInt("index", foundIndex)
+                                .apply()
+
+                            Toast.makeText(this, "Login berhasil", Toast.LENGTH_SHORT).show()
+
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+
+                        } else {
+                            Toast.makeText(this, "User tidak ditemukan", Toast.LENGTH_SHORT).show()
+                        }
+                    }
             }
             .addOnFailureListener {
                 findViewById<Button>(R.id.btnLogin).isEnabled = true

@@ -19,7 +19,6 @@ class AccountFragment: Fragment() {
 
     private lateinit var userNameTv : TextView
     private lateinit var emailTv    : TextView
-    private lateinit var phoneNumTv : TextView
     private var deviceID: String? = ""
     private var indexAcc: Int?    = -1
     private var firebaseDatabase = FirebaseDatabase.getInstance()
@@ -36,7 +35,6 @@ class AccountFragment: Fragment() {
 
         userNameTv = view.findViewById(R.id.userName)
         emailTv    = view.findViewById(R.id.email)
-        phoneNumTv = view.findViewById(R.id.phoneNum)
 
 
         val accPref      = requireActivity().getSharedPreferences("ACCOUNT", MODE_PRIVATE)
@@ -54,11 +52,9 @@ class AccountFragment: Fragment() {
                 if (snapshot.exists()) {
                     val email    = snapshot.child("email").value.toString()
                     val userName = snapshot.child("userName").value.toString()
-                    val phone    = snapshot.child("phoneNumber").value.toString()
 
                     emailTv.text    = email
                     userNameTv.text = userName
-                    phoneNumTv.text = phone
                 }
             }
 
