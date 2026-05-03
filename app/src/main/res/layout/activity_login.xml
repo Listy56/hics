@@ -124,6 +124,7 @@
 
         <!-- Button Google -->
         <Button
+            android:id="@+id/btnLoginGoogle"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:text="Continue with Google"

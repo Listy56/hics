@@ -30,8 +30,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".NotifActivity"/>
         <activity android:name=".ForgotPasswordActivity"/>
-        <activity android:name=".OtpActivity"/>
-        <activity android:name=".ResetPasswordActivity"/>
+        <activity android:name=".UsernameActivity" />
 
     </application>
 

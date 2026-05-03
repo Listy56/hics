@@ -5,10 +5,15 @@ import android.os.Bundle
 import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.*
 import com.google.firebase.database.FirebaseDatabase
+import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.common.api.ApiException
 
 class RegisterActivity : AppCompatActivity() {
+
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private val RC_SIGN_IN = 200
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +32,14 @@ class RegisterActivity : AppCompatActivity() {
         val auth = FirebaseAuth.getInstance()
         val database = FirebaseDatabase.getInstance().reference
 
+        // 🔥 GOOGLE CONFIG
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
         btnBack.setOnClickListener { finish() }
 
         tvLogin.setOnClickListener {
@@ -34,9 +47,12 @@ class RegisterActivity : AppCompatActivity() {
             finish()
         }
 
+        // =========================
+        // 🔥 REGISTER MANUAL
+        // =========================
         btnRegister.setOnClickListener {
 
-            val username = etUsername.text.toString().trim()
+            val username = etUsername.text.toString().trim().lowercase()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString()
             val confirm = etConfirmPassword.text.toString()
@@ -62,75 +78,65 @@ class RegisterActivity : AppCompatActivity() {
 
                     btnRegister.isEnabled = false
 
-                    // 🔥 CEK DUPLIKAT
-                    database.child("User")
-                        .get()
+                    // 🔥 CEK USERNAME TANPA INDEX
+                    database.child("User").get()
                         .addOnSuccessListener { snapshot ->
 
-                            var usernameExist = false
-                            var emailExist = false
+                            for (snap in snapshot.children) {
+                                val usernameDB = snap.child("userName").value.toString()
 
-                            for (userSnap in snapshot.children) {
-                                val dbUsername = userSnap.child("userName").value.toString()
-                                val dbEmail = userSnap.child("email").value.toString()
-
-                                if (username == dbUsername) usernameExist = true
-                                if (email == dbEmail) emailExist = true
+                                if (usernameDB == username) {
+                                    btnRegister.isEnabled = true
+                                    Toast.makeText(this, "Username sudah dipakai", Toast.LENGTH_SHORT).show()
+                                    return@addOnSuccessListener
+                                }
                             }
 
-                            when {
-                                usernameExist -> {
-                                    btnRegister.isEnabled = true
-                                    Toast.makeText(this, "Username sudah terdaftar", Toast.LENGTH_SHORT).show()
-                                }
+                            // 🔥 CEK EMAIL DI AUTH
+                            auth.fetchSignInMethodsForEmail(email)
+                                .addOnSuccessListener { result ->
 
-                                emailExist -> {
-                                    btnRegister.isEnabled = true
-                                    Toast.makeText(this, "Email sudah terdaftar", Toast.LENGTH_SHORT).show()
-                                }
+                                    if (result.signInMethods?.isNotEmpty() == true) {
+                                        btnRegister.isEnabled = true
+                                        Toast.makeText(this, "Email sudah terdaftar", Toast.LENGTH_SHORT).show()
+                                        return@addOnSuccessListener
+                                    }
 
-                                else -> {
-
-                                    // 🔥 REGISTER AUTH
+                                    // 🔥 BUAT USER AUTH
                                     auth.createUserWithEmailAndPassword(email, password)
                                         .addOnSuccessListener {
 
-                                            // 🔥 BUAT KEY user_X
-                                            var index = 1
-                                            var key: String
+                                            database.child("User").get()
+                                                .addOnSuccessListener { snapshot ->
 
-                                            do {
-                                                key = "user_$index"
-                                                index++
-                                            } while (snapshot.hasChild(key))
+                                                    var index = 1
+                                                    var key: String
 
-                                            val userMap = HashMap<String, Any>()
-                                            userMap["userName"] = username
-                                            userMap["email"] = email
-                                            userMap["id"] = ""
+                                                    do {
+                                                        key = "user_$index"
+                                                        index++
+                                                    } while (snapshot.hasChild(key))
 
-                                            // 🔥 SIMPAN KE DATABASE + SIMPAN INDEX
-                                            database.child("User")
-                                                .child(key)
-                                                .setValue(userMap)
-                                                .addOnSuccessListener {
+                                                    val userMap = HashMap<String, Any>()
+                                                    userMap["userName"] = username
+                                                    userMap["email"] = email
+                                                    userMap["id"] = ""
 
-                                                    // 🔥 ambil index dari key
-                                                    val indexFix = key.substringAfter("_").toIntOrNull()
+                                                    // 🔥 SIMPAN USER
+                                                    database.child("User")
+                                                        .child(key)
+                                                        .setValue(userMap)
+                                                        .addOnSuccessListener {
 
-                                                    // 🔥 simpan ke SharedPreferences
-                                                    getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
-                                                        .putInt("index", indexFix ?: -1)
-                                                        .apply()
+                                                            val indexFix = key.substringAfter("_").toIntOrNull()
+                                                            saveSession(indexFix)
 
-                                                    Toast.makeText(this, "Register berhasil", Toast.LENGTH_SHORT).show()
-
-                                                    startActivity(Intent(this, MainActivity::class.java))
-                                                    finish()
-                                                }
-                                                .addOnFailureListener {
-                                                    btnRegister.isEnabled = true
-                                                    Toast.makeText(this, "Gagal simpan data", Toast.LENGTH_SHORT).show()
+                                                            Toast.makeText(this, "Register berhasil", Toast.LENGTH_SHORT).show()
+                                                        }
+                                                        .addOnFailureListener {
+                                                            btnRegister.isEnabled = true
+                                                            Toast.makeText(this, "Gagal simpan user", Toast.LENGTH_SHORT).show()
+                                                        }
                                                 }
                                         }
                                         .addOnFailureListener {
@@ -138,19 +144,103 @@ class RegisterActivity : AppCompatActivity() {
                                             Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                                         }
                                 }
-                            }
-
                         }
                         .addOnFailureListener {
                             btnRegister.isEnabled = true
-                            Toast.makeText(this, "Gagal cek data", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Gagal cek username", Toast.LENGTH_SHORT).show()
                         }
                 }
             }
         }
 
+        // =========================
+        // 🔥 GOOGLE REGISTER
+        // =========================
         btnGoogle.setOnClickListener {
-            Toast.makeText(this, "Login Google belum tersedia", Toast.LENGTH_SHORT).show()
+            startActivityForResult(googleSignInClient.signInIntent, RC_SIGN_IN)
         }
+    }
+
+    // =========================
+    // 🔥 RESULT GOOGLE
+    // =========================
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val idToken = account.idToken
+
+                if (idToken != null) {
+                    firebaseAuthWithGoogle(idToken)
+                } else {
+                    Toast.makeText(this, "Token Google null", Toast.LENGTH_SHORT).show()
+                }
+
+            } catch (e: Exception) {
+                Toast.makeText(this, "Google gagal: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // =========================
+    // 🔥 GOOGLE AUTH
+    // =========================
+    private fun firebaseAuthWithGoogle(idToken: String) {
+
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+
+        FirebaseAuth.getInstance().signInWithCredential(credential)
+            .addOnSuccessListener {
+
+                val user = FirebaseAuth.getInstance().currentUser
+                val email = user?.email
+                val username = user?.displayName ?: "user"
+
+                if (email.isNullOrEmpty()) {
+                    Toast.makeText(this, "Email tidak ditemukan", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
+
+                val database = FirebaseDatabase.getInstance().reference
+
+                database.child("User").get()
+                    .addOnSuccessListener { snapshot ->
+
+                        var foundIndex: Int? = null
+
+                        for (snap in snapshot.children) {
+                            if (snap.child("email").value.toString() == email) {
+                                val key = snap.key
+                                foundIndex = key?.substringAfter("_")?.toIntOrNull()
+                                break
+                            }
+                        }
+
+                        if (foundIndex != null) {
+                            saveSession(foundIndex)
+                        } else {
+                            val intent = Intent(this, UsernameActivity::class.java)
+                            intent.putExtra("email", email)
+                            intent.putExtra("defaultUsername", username)
+                            startActivity(intent)
+                        }
+                    }
+            }
+    }
+
+    // =========================
+    // 🔥 SAVE SESSION
+    // =========================
+    private fun saveSession(index: Int?) {
+        getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
+            .putInt("index", index ?: -1)
+            .apply()
+
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }
