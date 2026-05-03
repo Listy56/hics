@@ -18,7 +18,7 @@ class UsernameActivity : AppCompatActivity() {
 
         val etUsername = findViewById<EditText>(R.id.etUsername)
         val btnSave = findViewById<Button>(R.id.btnSave)
-        val btnCancel = findViewById<Button>(R.id.btnCancel) // 🔥 WAJIB ADA DI XML
+        val btnCancel = findViewById<Button>(R.id.btnCancel)
 
         val email = intent.getStringExtra("email") ?: ""
         val defaultUsername = intent.getStringExtra("defaultUsername") ?: ""
@@ -27,7 +27,7 @@ class UsernameActivity : AppCompatActivity() {
 
         val database = FirebaseDatabase.getInstance().reference
 
-        // 🔥 INIT GOOGLE CLIENT (untuk logout)
+        // 🔥 INIT GOOGLE CLIENT
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .build()
@@ -107,26 +107,34 @@ class UsernameActivity : AppCompatActivity() {
     }
 
     // =========================
-    // 🔥 HANDLE TOMBOL BACK HP
+    // 🔥 BACK HP = BATAL
     // =========================
     override fun onBackPressed() {
         logoutAndBack()
     }
 
     // =========================
-    // 🔥 LOGOUT TOTAL
+    // 🔥 LOGOUT + HAPUS AKUN FIREBASE
     // =========================
     private fun logoutAndBack() {
 
-        // logout firebase
-        FirebaseAuth.getInstance().signOut()
+        val user = FirebaseAuth.getInstance().currentUser
 
-        // logout google
-        googleClient.signOut()
+        if (user != null) {
+            user.delete().addOnCompleteListener {
 
-        Toast.makeText(this, "Login dibatalkan", Toast.LENGTH_SHORT).show()
+                FirebaseAuth.getInstance().signOut()
+                googleClient.signOut()
 
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
+                Toast.makeText(this, "Login dibatalkan", Toast.LENGTH_SHORT).show()
+
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
+        } else {
+            FirebaseAuth.getInstance().signOut()
+            googleClient.signOut()
+            finish()
+        }
     }
 }
