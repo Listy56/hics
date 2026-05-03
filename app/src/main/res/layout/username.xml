@@ -23,7 +23,7 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:src="@drawable/logo"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp" />
 
         <!-- Title -->
         <TextView
@@ -34,7 +34,7 @@
             android:gravity="center"
             android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <!-- Subtitle -->
         <TextView
@@ -44,7 +44,7 @@
             android:gravity="center"
             android:layout_marginBottom="24dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <!-- Username Input -->
         <EditText
@@ -55,9 +55,9 @@
             android:background="@drawable/input_bg"
             android:padding="12dp"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp" />
 
-        <!-- Button -->
+        <!-- Button Lanjut -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
@@ -67,7 +67,18 @@
             android:textColor="@color/white"
             android:background="@drawable/btn_outline"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="10dp" />
+
+        <!--  BUTTON BATAL (PENTING) -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCancel"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:text="Batal"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:background="@drawable/btn_outline"
+            android:layout_marginHorizontal="10dp" />
 
     </LinearLayout>
 

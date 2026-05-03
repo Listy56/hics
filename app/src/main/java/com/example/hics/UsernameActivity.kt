@@ -2,13 +2,15 @@ package com.example.hics
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.android.gms.auth.api.signin.*
 
 class UsernameActivity : AppCompatActivity() {
+
+    private lateinit var googleClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,6 +18,7 @@ class UsernameActivity : AppCompatActivity() {
 
         val etUsername = findViewById<EditText>(R.id.etUsername)
         val btnSave = findViewById<Button>(R.id.btnSave)
+        val btnCancel = findViewById<Button>(R.id.btnCancel) // 🔥 WAJIB ADA DI XML
 
         val email = intent.getStringExtra("email") ?: ""
         val defaultUsername = intent.getStringExtra("defaultUsername") ?: ""
@@ -24,20 +27,29 @@ class UsernameActivity : AppCompatActivity() {
 
         val database = FirebaseDatabase.getInstance().reference
 
+        // 🔥 INIT GOOGLE CLIENT (untuk logout)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+
+        googleClient = GoogleSignIn.getClient(this, gso)
+
+        // =========================
+        // 🔥 SIMPAN USERNAME
+        // =========================
         btnSave.setOnClickListener {
 
             val username = etUsername.text.toString().trim()
 
-            // 🔴 VALIDASI
             if (username.isEmpty()) {
                 Toast.makeText(this, "Username wajib diisi", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // ✅ CEK USERNAME LANGSUNG KE "User"
             database.child("User").get()
                 .addOnSuccessListener { snapshot ->
 
+                    // 🔥 CEK DUPLIKAT USERNAME
                     for (snap in snapshot.children) {
                         val dbUsername = snap.child("userName").value.toString()
                         if (dbUsername == username) {
@@ -85,5 +97,36 @@ class UsernameActivity : AppCompatActivity() {
                     Toast.makeText(this, "Gagal ambil data user", Toast.LENGTH_SHORT).show()
                 }
         }
+
+        // =========================
+        // 🔥 TOMBOL BATAL
+        // =========================
+        btnCancel.setOnClickListener {
+            logoutAndBack()
+        }
+    }
+
+    // =========================
+    // 🔥 HANDLE TOMBOL BACK HP
+    // =========================
+    override fun onBackPressed() {
+        logoutAndBack()
+    }
+
+    // =========================
+    // 🔥 LOGOUT TOTAL
+    // =========================
+    private fun logoutAndBack() {
+
+        // logout firebase
+        FirebaseAuth.getInstance().signOut()
+
+        // logout google
+        googleClient.signOut()
+
+        Toast.makeText(this, "Login dibatalkan", Toast.LENGTH_SHORT).show()
+
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 }

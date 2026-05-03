@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity() {
         //  AMBIL INDEX DARI SESSION
         val accPref = getSharedPreferences("ACCOUNT", MODE_PRIVATE)
         indexAcc = accPref.getInt("index", -1)
+        //cek pengambilan index
+        //Toast.makeText(this, "Index di Main: $indexAcc", Toast.LENGTH_LONG).show()
 
         //  VALIDASI SESSION
         if (indexAcc == -1) {
