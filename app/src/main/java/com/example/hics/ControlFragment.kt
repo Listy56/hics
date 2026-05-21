@@ -15,6 +15,10 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 
 class ControlFragment : Fragment() {
 
@@ -219,6 +223,8 @@ class ControlFragment : Fragment() {
 
             if (online) {
 
+                vibratePhone()
+
                 modeStatus = !modeStatus
                 modeSwitchUI(modeStatus)
 
@@ -233,6 +239,8 @@ class ControlFragment : Fragment() {
         switchPump.setOnClickListener {
 
             if (online) {
+
+                vibratePhone()
 
                 pumpOn = !pumpOn
                 pumpSwitchUI(pumpOn)
@@ -249,6 +257,8 @@ class ControlFragment : Fragment() {
 
             if (online) {
 
+                vibratePhone()
+
                 phUpOn = !phUpOn
                 phUpSwitchUI(phUpOn)
 
@@ -263,6 +273,8 @@ class ControlFragment : Fragment() {
         switchPhDown.setOnClickListener {
 
             if (online) {
+
+                vibratePhone()
 
                 phDownOn = !phDownOn
                 phDownSwitchUI(phDownOn)
@@ -279,6 +291,8 @@ class ControlFragment : Fragment() {
 
             if (online) {
 
+                vibratePhone()
+
                 nutrisiUpOn = !nutrisiUpOn
                 nutrisiUpSwitchUI(nutrisiUpOn)
 
@@ -293,6 +307,8 @@ class ControlFragment : Fragment() {
         switchNutrisiDown.setOnClickListener {
 
             if (online) {
+
+                vibratePhone()
 
                 nutrisiDownOn = !nutrisiDownOn
                 nutrisiDownSwitchUI(nutrisiDownOn)
@@ -472,6 +488,30 @@ class ControlFragment : Fragment() {
                 .start()
 
             statusNutrisiDown.text = "OFF"
+        }
+    }
+    // ================= GETAR =================
+    private fun vibratePhone() {
+
+        val vibrator =
+            requireContext().getSystemService(
+                Context.VIBRATOR_SERVICE
+            ) as Vibrator
+
+        // Android baru
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            vibrator.vibrate(
+                VibrationEffect.createOneShot(
+                    40, // lama getar
+                    VibrationEffect.DEFAULT_AMPLITUDE
+                )
+            )
+
+        } else {
+
+            // Android lama
+            vibrator.vibrate(80)
         }
     }
 }

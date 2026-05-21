@@ -24,6 +24,11 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
+    private var lastPh = 0.0
+    private var lastPpm = 0
+    private var lastLevel = 0.0
+    private var lastAirTemp = 0.0
+    private var lastWaterTemp = 0.0
     private lateinit var phTextView: TextView
     private lateinit var nutrisiTextView: TextView
     private lateinit var statusSwitch: TextView
@@ -83,10 +88,156 @@ class HomeFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         suhuAir           = snapshot.child("dataStream").child("waterTemp").value.toString().toDouble()
+                        // ================= SUHU AIR TINGGI =================
+                        if (suhuAir > 30 && lastWaterTemp <= 30) {
+
+                            NotificationHelper.saveNotification(
+                                deviceID!!,
+                                "Suhu Air Tinggi",
+                                "Suhu air terlalu panas : $suhuAir°C"
+                            )
+
+                            NotificationHelper.showNotification(
+                                requireContext(),
+                                "Suhu Air Tinggi",
+                                "Suhu air terlalu panas : $suhuAir°C"
+                            )
+                        }
+
+// ================= SUHU AIR RENDAH =================
+                        if (suhuAir < 18 && lastWaterTemp >= 18) {
+
+                            NotificationHelper.saveNotification(
+                                deviceID!!,
+                                "Suhu Air Rendah",
+                                "Suhu air terlalu dingin : $suhuAir°C"
+                            )
+
+                            NotificationHelper.showNotification(
+                                requireContext(),
+                                "Suhu Air Rendah",
+                                "Suhu air terlalu dingin : $suhuAir°C"
+                            )
+                        }
+
+                        lastWaterTemp = suhuAir
                         suhuUdara         = snapshot.child("dataStream").child("airTemp").value.toString().toDouble()
+                        // ================= SUHU UDARA TINGGI =================
+                        if (suhuUdara > 35 && lastAirTemp <= 35) {
+
+                            NotificationHelper.saveNotification(
+                                deviceID!!,
+                                "Suhu Udara Tinggi",
+                                "Suhu udara terlalu panas : $suhuUdara°C"
+                            )
+
+                            NotificationHelper.showNotification(
+                                requireContext(),
+                                "Suhu Udara Tinggi",
+                                "Suhu udara terlalu panas : $suhuUdara°C"
+                            )
+                        }
+
+// ================= SUHU UDARA RENDAH =================
+                        if (suhuUdara < 20 && lastAirTemp >= 20) {
+
+                            NotificationHelper.saveNotification(
+                                deviceID!!,
+                                "Suhu Udara Rendah",
+                                "Suhu udara terlalu dingin : $suhuUdara°C"
+                            )
+
+                            NotificationHelper.showNotification(
+                                requireContext(),
+                                "Suhu Udara Rendah",
+                                "Suhu udara terlalu dingin : $suhuUdara°C"
+                            )
+                        }
+
+                        lastAirTemp = suhuUdara
                         pH                = snapshot.child("dataStream").child("pH").value.toString().toDouble()
+                        // ================= pH RENDAH =================
+                        if (pH < 5.5 && lastPh >= 5.5) {
+
+                            NotificationHelper.saveNotification(
+                                deviceID!!,
+                                "pH Rendah",
+                                "Nilai pH terlalu rendah : $pH"
+                            )
+
+                            NotificationHelper.showNotification(
+                                requireContext(),
+                                "pH Rendah",
+                                "Nilai pH terlalu rendah : $pH"
+                            )
+                        }
+
+                        // =====                ============ pH TINGGI =================
+                        if (pH > 7.5 && lastPh <= 7.5) {
+
+                            NotificationHelper.saveNotification(
+                                deviceID!!,
+                                "pH Tinggi",
+                                "Nilai pH terlalu tinggi : $pH"
+                            )
+
+                            NotificationHelper.showNotification(
+                                requireContext(),
+                                "pH Tinggi",
+                                "Nilai pH terlalu tinggi : $pH"
+                            )
+                        }
+
+                        lastPh = pH
                         nutrisi           = snapshot.child("dataStream").child("ppm").value.toString().toInt()
+                        if (nutrisi < 800 && lastPpm >= 800) {
+
+                            NotificationHelper.saveNotification(
+                                deviceID!!,
+                                "Nutrisi Rendah",
+                                "PPM terlalu rendah : $nutrisi"
+                            )
+
+                            NotificationHelper.showNotification(
+                                requireContext(),
+                                "Nutrisi Rendah",
+                                "PPM terlalu rendah : $nutrisi"
+                            )
+                        }
+
+                        if (nutrisi > 1500 && lastPpm <= 1500) {
+
+                            NotificationHelper.saveNotification(
+                                deviceID!!,
+                                "Nutrisi Tinggi",
+                                "PPM terlalu tinggi : $nutrisi"
+                            )
+
+                            NotificationHelper.showNotification(
+                                requireContext(),
+                                "Nutrisi Tinggi",
+                                "PPM terlalu tinggi : $nutrisi"
+                            )
+                        }
+
+                        lastPpm = nutrisi
                         level             = snapshot.child("dataStream").child("waterLevel").value.toString().toDouble()
+                        if (level < 20 && lastLevel >= 20) {
+
+                            NotificationHelper.saveNotification(
+                                deviceID!!,
+                                "Air Rendah",
+                                "Level air tinggal $level%"
+                            )
+
+                            NotificationHelper.showNotification(
+                                requireContext(),
+                                "Air Rendah",
+                                "Level air tinggal $level%"
+                            )
+                        }
+
+                        lastLevel = level
                         intensitasCahaya  = snapshot.child("dataStream").child("light").value.toString().toInt()
                         isOn              = snapshot.child("control").child("waterPump").value.toString().toBoolean()
 
