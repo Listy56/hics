@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="Setting"
+        android:text="Pengaturan"
         android:fontFamily="@font/poppinmedium"
         android:textColor="@color/hijau_end"
         android:layout_gravity="center"/>
@@ -84,7 +84,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Control"
+                        android:text="Kontrol"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppinmedium"
                         android:textColor="@color/hijau_end"/>
@@ -120,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="Device"
+                        android:text="Perangkat"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppinmedium"
                         android:textColor="@color/hijau_end"/>
@@ -164,7 +164,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/account_data"
+                        android:text="Akun dan Data"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppinmedium"
                         android:textColor="@color/hijau_end"/>

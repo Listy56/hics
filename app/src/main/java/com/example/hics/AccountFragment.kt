@@ -14,12 +14,14 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import android.content.Intent
 
 class AccountFragment : Fragment() {
 
     private lateinit var userNameTv: TextView
     private lateinit var emailTv: TextView
     private lateinit var exportCsvLayout: LinearLayout
+    private lateinit var disconnectBt: androidx.cardview.widget.CardView
 
     private var deviceID: String = ""
     private var indexAcc: Int = -1
@@ -62,6 +64,9 @@ class AccountFragment : Fragment() {
 
         exportCsvLayout =
             view.findViewById(R.id.exportCsv)
+
+        disconnectBt =
+            view.findViewById(R.id.disconnectBt)
 
         // =========================================
         // GET SHARED PREF
@@ -163,6 +168,60 @@ class AccountFragment : Fragment() {
                 )
                 .addToBackStack(null)
                 .commit()
+        }
+        disconnectBt.setOnClickListener {
+
+            // logout firebase
+            com.google.firebase.auth.FirebaseAuth
+                .getInstance()
+                .signOut()
+
+            // logout google
+            val gso =
+                com.google.android.gms.auth.api.signin.GoogleSignInOptions
+                    .Builder(
+                        com.google.android.gms.auth.api.signin.GoogleSignInOptions.DEFAULT_SIGN_IN
+                    )
+                    .requestEmail()
+                    .build()
+
+            val googleSignInClient =
+                com.google.android.gms.auth.api.signin.GoogleSignIn
+                    .getClient(
+                        requireContext(),
+                        gso
+                    )
+
+            googleSignInClient
+                .revokeAccess()
+                .addOnCompleteListener {
+
+                    // hapus session local
+                    accPref.edit()
+                        .clear()
+                        .putBoolean("isLogin", false)
+                        .apply()
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Berhasil keluar akun",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    val intent =
+                        Intent(
+                            requireContext(),
+                            LoginActivity::class.java
+                        )
+
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                    startActivity(intent)
+
+                    requireActivity().finish()
+                }
         }
     }
 }

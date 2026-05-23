@@ -19,6 +19,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
@@ -212,11 +213,22 @@ class LoginActivity : AppCompatActivity() {
     // SAVE SESSION
     // =========================
     private fun saveSession(index: Int?) {
-        getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
+
+        getSharedPreferences(
+            "ACCOUNT",
+            MODE_PRIVATE
+        ).edit()
             .putInt("index", index ?: -1)
+            .putBoolean("isLogin", true)
             .apply()
 
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(
+            Intent(
+                this,
+                MainActivity::class.java
+            )
+        )
+
         finish()
     }
 }

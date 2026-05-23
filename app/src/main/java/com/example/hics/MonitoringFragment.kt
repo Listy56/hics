@@ -33,7 +33,6 @@ class MonitoringFragment: Fragment() {
 
     private lateinit var spinnerInterval : Spinner
     private lateinit var spinnerSuhu : Spinner
-    private lateinit var spinnerNutrisi : Spinner
 
     private var firebaseDatabase = FirebaseDatabase.getInstance()
     private var indexAcc: Int?    = 0
@@ -66,16 +65,14 @@ class MonitoringFragment: Fragment() {
         circleNotif = view.findViewById(R.id.circleNotif)
         spinnerInterval  = view.findViewById(R.id.spinnerInterval)
         spinnerSuhu      = view.findViewById(R.id.spinnerSuhu)
-        spinnerNutrisi   = view.findViewById(R.id.spinnernutrisi)
         save             = view.findViewById(R.id.save)
 
         val intervalList = listOf("10", "30", "60", "120")
         val suhuList     = listOf("C", "F")
-        val nutrisiList  = listOf("PPM", "EC")
 
         spinnerInterval.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, intervalList)
         spinnerSuhu.adapter     = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, suhuList)
-        spinnerNutrisi.adapter  = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, nutrisiList)
+
 
         val accPref      = requireActivity().getSharedPreferences("ACCOUNT", MODE_PRIVATE)
         deviceID         = accPref.getString("deviceID", "")
@@ -90,12 +87,18 @@ class MonitoringFragment: Fragment() {
                     if (snapshot.exists()) {
                         spinnerInterval.visibility = View.VISIBLE
                         spinnerSuhu.visibility     = View.VISIBLE
-                        spinnerNutrisi.visibility  = View.VISIBLE
 
+<<<<<<< HEAD
                         phMin  = snapshot.child("phMin").value.toString()
                         phMax  = snapshot.child("phMax").value.toString()
                         ppmMin = snapshot.child("ppmMin").value.toString()
                         ppmMax = snapshot.child("ppmMax").value.toString()
+=======
+                        phMin = snapshot.child("phMin").value.toString()
+                        phMax = snapshot.child("phMax").value.toString()
+                        ppmMin  = snapshot.child("ppmMin").value.toString()
+                        ppmMax  = snapshot.child("ppmMax").value.toString()
+>>>>>>> upstream/main
                         val notif  = snapshot.child("notifAlert").value.toString()
                         val tUnit  = snapshot.child("tempUnit").value.toString()
                         val nUnit  = snapshot.child("ppmUnit").value.toString()
@@ -115,12 +118,6 @@ class MonitoringFragment: Fragment() {
                             else -> 0
                         }
 
-                        val nutrisiIndex = when(nUnit) {
-                            "PPM" -> 0
-                            "EC"  -> 1
-                            else  -> 0
-                        }
-
                         etPhMin.hint = phMin
                         etPhMax.hint = phMax
                         etPpmMin.hint = ppmMin
@@ -137,14 +134,12 @@ class MonitoringFragment: Fragment() {
 
                         spinnerInterval.setSelection(intervalIndex)
                         spinnerSuhu.setSelection(suhuIndex)
-                        spinnerNutrisi.setSelection(nutrisiIndex)
 
                         online = true
 
                     } else {
                         spinnerInterval.visibility = View.GONE
                         spinnerSuhu.visibility     = View.GONE
-                        spinnerNutrisi.visibility  = View.GONE
 
                         online = false
                     }
@@ -179,7 +174,6 @@ class MonitoringFragment: Fragment() {
                                 "ppmMin" to newPpmMin,
                                 "notifAlert" to isOn.toString(),
                                 "tempUnit" to spinnerSuhu.selectedItem.toString(),
-                                "ppmUnit" to spinnerNutrisi.selectedItem.toString(),
                                 "intervalUpdate" to spinnerInterval.selectedItem.toString()
                             )
                         )

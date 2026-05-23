@@ -1,6 +1,7 @@
 package com.example.hics
 
 data class NotificationModel(
+<<<<<<< HEAD
     val title: String   = "",
     val message: String = ""
 )
@@ -22,3 +23,12 @@ object NotificationStore {
         unreadCount = 0
     }
 }
+=======
+
+    val title: String = "",
+    val message: String = "",
+    val time: Long = System.currentTimeMillis(),
+    val isRead: Boolean = false
+
+)
+>>>>>>> upstream/main

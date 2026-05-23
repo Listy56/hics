@@ -17,7 +17,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="14dp"
         android:fontFamily="@font/poppinmedium"
-        android:text="Monitoring Chart"
+        android:text="Monitoring Data"
         android:textColor="@color/hijau_end"
         android:textSize="18sp" />
 
@@ -66,14 +66,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/poppinsbold"
-                            android:text="Weather Forecast"
+                            android:text="Prakiraan Cuaca"
                             android:textColor="@color/hijau_end"
                             android:textSize="14sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Realtime"
+                            android:text="Data Langsung"
                             android:textColor="#8A9BB0"
                             android:textSize="11sp" />
 
@@ -137,7 +137,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/poppinsbold"
-                            android:text="Line Chart"
+                            android:text="Grafik Sensor"
                             android:textColor="@color/hijau_end"
                             android:textSize="14sp" />
 

@@ -7,6 +7,8 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.*
+
 
 class NotifActivity: AppCompatActivity() {
     private lateinit var back: ImageView
@@ -26,10 +28,46 @@ class NotifActivity: AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter       = adapter
 
+<<<<<<< HEAD
         notifList.clear()
         notifList.addAll(NotificationStore.getAll())
         NotificationStore.markAllRead()
         adapter.notifyDataSetChanged()
+=======
+        val accPref =
+            getSharedPreferences("ACCOUNT", MODE_PRIVATE)
+
+        val deviceID =
+            accPref.getString("deviceID", "") ?: ""
+
+        FirebaseDatabase.getInstance()
+            .getReference("Hics")
+            .child(deviceID)
+            .child("notifications")
+            .addValueEventListener(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    notifList.clear()
+
+                    for (data in snapshot.children.reversed()) {
+
+                        val notif =
+                            data.getValue(NotificationModel::class.java)
+
+                        if (notif != null) {
+                            notifList.add(notif)
+                        }
+                    }
+
+                    adapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
+>>>>>>> upstream/main
 
         back.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
