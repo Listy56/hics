@@ -79,14 +79,28 @@ class MainActivity : AppCompatActivity() {
 
         // ================= SESSION =================
 
+        // ================= SESSION =================
+
         val accPref =
-            getSharedPreferences("ACCOUNT", MODE_PRIVATE)
+            getSharedPreferences(
+                "ACCOUNT",
+                MODE_PRIVATE
+            )
+
+        val isLogin =
+            accPref.getBoolean(
+                "isLogin",
+                false
+            )
 
         indexAcc =
-            accPref.getInt("index", -1)
+            accPref.getInt(
+                "index",
+                -1
+            )
 
-        // validasi login
-        if (indexAcc == -1) {
+// validasi login
+        if (!isLogin || indexAcc == -1) {
 
             Toast.makeText(
                 this,
@@ -95,13 +109,15 @@ class MainActivity : AppCompatActivity() {
             ).show()
 
             startActivity(
-                Intent(this, LoginActivity::class.java)
+                Intent(
+                    this,
+                    LoginActivity::class.java
+                )
             )
 
             finish()
             return
         }
-
         val accFirebase =
             firebaseDatabase.getReference("User")
 
@@ -127,6 +143,7 @@ class MainActivity : AppCompatActivity() {
                         ).edit()
                             .putString("deviceID", id)
                             .putInt("index", indexAcc)
+                            .putBoolean("isLogin", true)
                             .apply()
 
                         // load notif setelah deviceID ada
@@ -140,6 +157,7 @@ class MainActivity : AppCompatActivity() {
                         ).edit()
                             .putString("deviceID", "")
                             .putInt("index", -1)
+                            .putBoolean("isLogin", false)
                             .apply()
                     }
                 }

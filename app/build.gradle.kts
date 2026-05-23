@@ -53,6 +53,7 @@ dependencies {
     implementation ("androidx.appcompat:appcompat:1.7.0")
     implementation ("com.itextpdf:itextg:5.5.10")
 
+
     // FIREBASE (PAKAI BOM)
     implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
     implementation("com.google.firebase:firebase-analytics")

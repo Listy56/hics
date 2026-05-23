@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="Device"
+        android:text="Perangkat"
         android:fontFamily="@font/poppinmedium"
         android:textColor="@color/hijau_end"
         android:layout_gravity="center"/>
@@ -19,7 +19,7 @@
         android:id="@+id/tvInputDevice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Input Device ID :"
+        android:text="Masukkan ID Perangkat :"
         android:fontFamily="@font/poppinsbold"
         android:textColor="@color/hijau_end"
         android:textSize="14sp"
@@ -68,7 +68,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Connect"
+                android:text="Hubungkan"
                 android:fontFamily="@font/poppinmedium"
                 android:textColor="@color/white"/>
         </LinearLayout>
@@ -92,7 +92,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Device Info"
+                android:text="Informasi Perangkat"
                 android:textSize="14sp"
                 android:fontFamily="@font/poppinsbold"
                 android:textColor="@color/hijau_end"/>
@@ -128,7 +128,7 @@
                             android:textColor="@color/hijau_end"
                             android:textSize="14sp"
                             android:layout_weight="2"
-                            android:text="Device ID"/>
+                            android:text="ID Perangkat"/>
 
                         <TextView
                             android:id="@+id/deviceID"
@@ -141,7 +141,7 @@
                             android:textAlignment="textEnd"
                             android:layout_weight="2"
                             android:paddingRight="10dp"
-                            android:text="deviceID"/>
+                            android:text="ID Perangkat"/>
                     </LinearLayout>
 
                     <View
@@ -184,7 +184,7 @@
                             android:textColor="@color/hijau_end"
                             android:textSize="14sp"
                             android:layout_weight="2"
-                            android:text="Network SSID"/>
+                            android:text="Nama WiFi"/>
 
                         <TextView
                             android:id="@+id/ssid"
@@ -197,7 +197,7 @@
                             android:paddingRight="10dp"
                             android:textAlignment="textEnd"
                             android:layout_weight="2"
-                            android:text="ssid"/>
+                            android:text="Nama Wifi"/>
                     </LinearLayout>
 
                     <View
@@ -240,7 +240,7 @@
                             android:textColor="@color/hijau_end"
                             android:textSize="14sp"
                             android:layout_weight="2"
-                            android:text="Last Update"/>
+                            android:text="Pembaruan Terakhir"/>
 
                         <TextView
                             android:id="@+id/lastUpdate"
@@ -253,7 +253,7 @@
                             android:textStyle="italic"
                             android:textAlignment="textEnd"
                             android:layout_weight="2"
-                            android:text="lastUpdate"/>
+                            android:text="Pembaruan Terakhir"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -279,7 +279,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Disconnect Device"
+                android:text="Putuskan Perangkat"
                 android:fontFamily="@font/poppinmedium"
                 android:textColor="@color/white"/>
         </LinearLayout>

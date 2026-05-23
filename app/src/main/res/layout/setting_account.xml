@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="@string/account_data"
+        android:text="Akun dan Data"
         android:fontFamily="@font/poppinmedium"
         android:textColor="@color/hijau_end"
         android:layout_gravity="center"/>
@@ -32,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="Profil"
                 android:textSize="14sp"
                 android:fontFamily="@font/poppinsbold"
                 android:textColor="@color/hijau_end"/>
@@ -68,7 +68,7 @@
                             android:textColor="#808080"
                             android:textSize="14sp"
                             android:layout_weight="2"
-                            android:text="User Name"/>
+                            android:text="Nama Pengguna"/>
 
                         <TextView
                             android:id="@+id/userName"
@@ -157,45 +157,6 @@
                 android:layout_marginBottom="7dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/phone"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:weightSum="4"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppinmedium"
-                            android:textColor="#808080"
-                            android:textSize="14sp"
-                            android:layout_weight="2"
-                            android:text="Phone Number"/>
-
-                        <TextView
-                            android:id="@+id/phoneNum"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppinsregular"
-                            android:textColor="#66000000"
-                            android:textSize="12sp"
-                            android:paddingRight="10dp"
-                            android:textStyle="italic"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="2"
-                            android:text="phoneNum"/>
-                    </LinearLayout>
-                </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>
@@ -256,54 +217,13 @@
                             android:textColor="#808080"
                             android:textSize="14sp"
                             android:layout_weight="2"
-                            android:text="History"/>
+                            android:text="Riwayat Data"/>
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="#22000000"/>
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!--            Control-->
-            <LinearLayout
-                android:id="@+id/Reset"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/reset"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:weightSum="4"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppinmedium"
-                            android:textColor="#BBFF0000"
-                            android:textSize="14sp"
-                            android:layout_weight="2"
-                            android:text="Reset Data"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -330,7 +250,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Logout"
+                android:text="Keluar"
                 android:fontFamily="@font/poppinmedium"
                 android:textColor="@color/white"/>
         </LinearLayout>

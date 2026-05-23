@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/poppinmedium"
-            android:text="Control"
+            android:text="Kontrol"
             android:textColor="@color/hijau_end"
             android:textSize="20sp" />
 
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/poppinmedium"
-                    android:text="Auto"
+                    android:text="Otomatis"
                     android:textColor="@color/hijau_end"
                     android:textSize="14sp"
                     android:textStyle="italic" />
@@ -191,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:fontFamily="@font/poppinmedium"
-                        android:text="pH Up"
+                        android:text="Penambah pH"
                         android:textColor="#08AAA3"
                         android:textSize="12sp" />
 
@@ -253,7 +253,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:fontFamily="@font/poppinmedium"
-                        android:text="pH Down"
+                        android:text="Penurun pH"
                         android:textColor="#08AAA3"
                         android:textSize="12sp" />
 
@@ -325,7 +325,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:fontFamily="@font/poppinmedium"
-                        android:text="Nutrisi Up"
+                        android:text="Penambah Nutrisi"
                         android:textColor="#08AAA3"
                         android:textSize="12sp" />
 
@@ -387,7 +387,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:fontFamily="@font/poppinmedium"
-                        android:text="Nutrisi Down"
+                        android:text="Penurun Nutrisi"
                         android:textColor="#08AAA3"
                         android:textSize="12sp" />
 

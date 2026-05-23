@@ -16,7 +16,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="14dp"
         android:fontFamily="@font/poppinmedium"
-        android:text="History Monitoring"
+        android:text="Riwayat Monitoring"
         android:textColor="@color/hijau_end"
         android:textSize="18sp" />
 
@@ -73,7 +73,7 @@
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:fontFamily="@font/poppinsbold"
-                            android:text="Filter History"
+                            android:text="Filter Riwayat"
                             android:textColor="@color/hijau_end"
                             android:textSize="14sp" />
 
@@ -138,7 +138,7 @@
                                     android:gravity="center"
                                     android:minWidth="0dp"
                                     android:paddingHorizontal="12dp"
-                                    android:text="PPM"
+                                    android:text="Nutrisi"
                                     android:textColor="@drawable/chip_text_selector"
                                     android:textSize="12sp" />
 
@@ -174,7 +174,7 @@
                                     android:gravity="center"
                                     android:minWidth="0dp"
                                     android:paddingHorizontal="12dp"
-                                    android:text="Water Temp"
+                                    android:text="Suhu Air"
                                     android:textColor="@drawable/chip_text_selector"
                                     android:textSize="12sp" />
 
@@ -192,7 +192,7 @@
                                     android:gravity="center"
                                     android:minWidth="0dp"
                                     android:paddingHorizontal="12dp"
-                                    android:text="Air Temp"
+                                    android:text="Suhu Udara"
                                     android:textColor="@drawable/chip_text_selector"
                                     android:textSize="12sp" />
 
@@ -210,7 +210,7 @@
                                     android:gravity="center"
                                     android:minWidth="0dp"
                                     android:paddingHorizontal="12dp"
-                                    android:text="Light"
+                                    android:text="Intensitas"
                                     android:textColor="@drawable/chip_text_selector"
                                     android:textSize="12sp" />
 
@@ -228,7 +228,7 @@
                                     android:gravity="center"
                                     android:minWidth="0dp"
                                     android:paddingHorizontal="12dp"
-                                    android:text="Water Level"
+                                    android:text="Ketersediaan Air"
                                     android:textColor="@drawable/chip_text_selector"
                                     android:textSize="12sp" />
 
@@ -284,7 +284,7 @@
                             android:layout_height="40dp"
                             android:layout_marginTop="10dp"
                             android:background="@color/hijau_end"
-                            android:text="Export"
+                            android:text="Ekspor Data"
                             android:textAllCaps="false"
                             android:textColor="@android:color/white"
                             android:textSize="13sp"
@@ -389,7 +389,7 @@
                                 android:minWidth="170dp"
                                 android:gravity="center_vertical"
                                 android:paddingHorizontal="10dp"
-                                android:text="Timestamp"
+                                android:text="Waktu"
                                 android:textColor="@android:color/white"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -417,7 +417,7 @@
                                 android:minWidth="100dp"
                                 android:gravity="center"
                                 android:paddingHorizontal="10dp"
-                                android:text="PPM"
+                                android:text="Nutrisi"
                                 android:textColor="@android:color/white"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -431,7 +431,7 @@
                                 android:minWidth="130dp"
                                 android:gravity="center"
                                 android:paddingHorizontal="10dp"
-                                android:text="Water Temp"
+                                android:text="Suhu Air"
                                 android:textColor="@android:color/white"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -445,7 +445,7 @@
                                 android:minWidth="130dp"
                                 android:gravity="center"
                                 android:paddingHorizontal="10dp"
-                                android:text="Air Temp"
+                                android:text="Suhu Udara"
                                 android:textColor="@android:color/white"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -459,7 +459,7 @@
                                 android:minWidth="100dp"
                                 android:gravity="center"
                                 android:paddingHorizontal="10dp"
-                                android:text="Light"
+                                android:text="Intensitas"
                                 android:textColor="@android:color/white"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -473,7 +473,7 @@
                                 android:minWidth="140dp"
                                 android:gravity="center"
                                 android:paddingHorizontal="10dp"
-                                android:text="Water Level"
+                                android:text="Ketersediaan Air"
                                 android:textColor="@android:color/white"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
