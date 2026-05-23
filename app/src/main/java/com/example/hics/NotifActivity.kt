@@ -28,6 +28,12 @@ class NotifActivity: AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter       = adapter
 
+<<<<<<< HEAD
+        notifList.clear()
+        notifList.addAll(NotificationStore.getAll())
+        NotificationStore.markAllRead()
+        adapter.notifyDataSetChanged()
+=======
         val accPref =
             getSharedPreferences("ACCOUNT", MODE_PRIVATE)
 
@@ -61,6 +67,7 @@ class NotifActivity: AppCompatActivity() {
 
                 }
             })
+>>>>>>> upstream/main
 
         back.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
