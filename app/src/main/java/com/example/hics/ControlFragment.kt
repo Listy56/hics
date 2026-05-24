@@ -330,7 +330,7 @@ class ControlFragment : Fragment() {
 
             circleMode.animate()
                 .translationX(
-                    (switchPump.width - circlePump.width - 12).toFloat()
+                    (switchMode.width - circleMode.width - 12).toFloat()
                 )
                 .setDuration(200)
                 .start()
@@ -384,7 +384,7 @@ class ControlFragment : Fragment() {
 
             circlePhUp.animate()
                 .translationX(
-                    (switchPump.width - circlePump.width - 12).toFloat()
+                    (switchPhUp.width - circlePhUp.width - 12).toFloat()
                 )
                 .setDuration(200)
                 .start()
@@ -413,7 +413,7 @@ class ControlFragment : Fragment() {
 
             circlePhDown.animate()
                 .translationX(
-                    (switchPump.width - circlePump.width - 12).toFloat()
+                    (switchPhDown.width - circlePhDown.width - 12).toFloat()
                 )
                 .setDuration(200)
                 .start()
@@ -442,7 +442,7 @@ class ControlFragment : Fragment() {
 
             circleNutrisiUp.animate()
                 .translationX(
-                    (switchPump.width - circlePump.width - 12).toFloat()
+                    (switchNutrisiUp.width - circleNutrisiUp.width - 12).toFloat()
                 )
                 .setDuration(200)
                 .start()
@@ -471,7 +471,7 @@ class ControlFragment : Fragment() {
 
             circleNutrisiDown.animate()
                 .translationX(
-                    (switchPump.width - circlePump.width - 12).toFloat()
+                    (switchNutrisiDown.width - circleNutrisiDown.width - 12).toFloat()
                 )
                 .setDuration(200)
                 .start()

@@ -92,7 +92,13 @@ class MonitoringFragment: Fragment() {
                         phMax = snapshot.child("phMax").value.toString()
                         ppmMin  = snapshot.child("ppmMin").value.toString()
                         ppmMax  = snapshot.child("ppmMax").value.toString()
-                        val notif  = snapshot.child("notifAlert").value.toString()
+                        val notifValue = snapshot.child("notifAlert").value
+
+                        val notif = when (notifValue) {
+                            is Boolean -> notifValue
+                            is String -> notifValue.toBoolean()
+                            else -> false
+                        }
                         val tUnit  = snapshot.child("tempUnit").value.toString()
                         val nUnit  = snapshot.child("ppmUnit").value.toString()
                         val interval = snapshot.child("intervalUpdate").value.toString()
@@ -116,14 +122,8 @@ class MonitoringFragment: Fragment() {
                         etPpmMin.hint = ppmMin
                         etPpmMax.hint = ppmMax
 
-                        if(notif == "true") {
-                            updateSwitchUI(true)
-                            isOn = true
-                        }
-                        else {
-                            isOn = false
-                            updateSwitchUI(false)
-                        }
+                        isOn = notif
+                        updateSwitchUI(isOn)
 
                         spinnerInterval.setSelection(intervalIndex)
                         spinnerSuhu.setSelection(suhuIndex)
@@ -165,7 +165,7 @@ class MonitoringFragment: Fragment() {
                                 "phMin" to newPhMin,
                                 "ppmMax" to newPpmMax,
                                 "ppmMin" to newPpmMin,
-                                "notifAlert" to isOn.toString(),
+                                "notifAlert" to isOn,
                                 "tempUnit" to spinnerSuhu.selectedItem.toString(),
                                 "intervalUpdate" to spinnerInterval.selectedItem.toString()
                             )
@@ -182,14 +182,16 @@ class MonitoringFragment: Fragment() {
     }
 
     fun updateSwitchUI(isOn: Boolean) {
-        if (isOn) {
-            switchNotif.setBackgroundResource(R.drawable.bg_switch_on)
-            circleNotif.animate().translationX(
-                (switchNotif.width - circleNotif.width - 12).toFloat()
-            ).setDuration(200).start()
-        } else {
-            switchNotif.setBackgroundResource(R.drawable.bg_switch_off)
-            circleNotif.animate().translationX(0f).setDuration(200).start()
+        switchNotif.post {
+            if (isOn) {
+                switchNotif.setBackgroundResource(R.drawable.bg_switch_on)
+                circleNotif.animate().translationX(
+                    (switchNotif.width - circleNotif.width - 12).toFloat()
+                ).setDuration(200).start()
+            } else {
+                switchNotif.setBackgroundResource(R.drawable.bg_switch_off)
+                circleNotif.animate().translationX(0f).setDuration(200).start()
+            }
         }
     }
 }

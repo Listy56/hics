@@ -76,10 +76,6 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            requireActivity().finish()
-        }
-
         // init UI
         phTextView = view.findViewById(R.id.tvPh)
         nutrisiTextView = view.findViewById(R.id.tvNutrisi)
@@ -101,6 +97,9 @@ class HomeFragment : Fragment() {
         baseFirebase.child(deviceID!!).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
 
+                // ===== REVISI =====
+                if (!isAdded || view == null) return
+
                 if (!snapshot.exists()) return
 
                 // ===== SETTING =====
@@ -108,7 +107,14 @@ class HomeFragment : Fragment() {
                 phMaxSetting = snapshot.child("setting/phMax").value.toString().toDoubleOrNull() ?: 7.5
                 ppmMinSetting = snapshot.child("setting/ppmMin").value.toString().toIntOrNull() ?: 800
                 ppmMaxSetting = snapshot.child("setting/ppmMax").value.toString().toIntOrNull() ?: 1500
-                notifAlert = snapshot.child("setting/notifAlert").value.toString().toBoolean()
+                val notifValue = snapshot.child("setting/notifAlert").value
+
+                notifAlert = when (notifValue) {
+                    is Boolean -> notifValue
+                    is String -> notifValue.toBoolean()
+                    else -> false
+                }
+
                 tempUnit = snapshot.child("setting/tempUnit").value.toString()
 
                 // ===== DATA =====
@@ -176,6 +182,7 @@ class HomeFragment : Fragment() {
             Pair(value, "°C")
         }
     }
+
     private fun checkPH() {
         checkParameter(
             value = pH,
@@ -245,7 +252,6 @@ class HomeFragment : Fragment() {
             else -> Status.NORMAL
         }
 
-        // 🔥 KUNCI: hanya kirim notif kalau status BERUBAH
         if (currentStatus == lastWaterTempStatus) return
 
         when (currentStatus) {
@@ -292,7 +298,8 @@ class HomeFragment : Fragment() {
             else -> Status.NORMAL
         }
 
-        val changed = currentStatus != lastStatus || value != lastValue
+        // ===== REVISI =====
+        val changed = currentStatus != lastStatus
 
         if (!changed) return
 
@@ -309,9 +316,16 @@ class HomeFragment : Fragment() {
         onUpdate(ResultState(currentStatus, value))
     }
 
+    // ===== REVISI =====
     private fun sendNotif(title: String, message: String) {
-        NotificationHelper.saveNotification(deviceID!!, title, message)
-        NotificationHelper.showNotification(requireContext(), title, message)
+
+        if (!isAdded || context == null) return
+
+        NotificationHelper.saveNotification(deviceID ?: "", title, message)
+
+        context?.let {
+            NotificationHelper.showNotification(it, title, message)
+        }
     }
 
     data class ResultState(val status: Status, val value: Double)
