@@ -53,14 +53,10 @@ class MainActivity : AppCompatActivity() {
             .setDuration(300)
             .start()
 
-        window.statusBarColor =
-            getColor(R.color.hijau_start)
-
-        window.navigationBarColor =
-            getColor(R.color.white)
+        window.statusBarColor = getColor(R.color.hijau_start)
+        window.navigationBarColor = getColor(R.color.white)
 
         // ================= INIT VIEW =================
-
         homeBt = findViewById(R.id.homeBt)
         chartBt = findViewById(R.id.chartBt)
         settingBt = findViewById(R.id.settingBt)
@@ -78,28 +74,11 @@ class MainActivity : AppCompatActivity() {
         btnNotif = findViewById(R.id.btn_notif)
 
         // ================= SESSION =================
+        val accPref = getSharedPreferences("ACCOUNT", MODE_PRIVATE)
 
-        // ================= SESSION =================
+        val isLogin = accPref.getBoolean("isLogin", false)
+        indexAcc = accPref.getInt("index", -1)
 
-        val accPref =
-            getSharedPreferences(
-                "ACCOUNT",
-                MODE_PRIVATE
-            )
-
-        val isLogin =
-            accPref.getBoolean(
-                "isLogin",
-                false
-            )
-
-        indexAcc =
-            accPref.getInt(
-                "index",
-                -1
-            )
-
-// validasi login
         if (!isLogin || indexAcc == -1) {
 
             Toast.makeText(
@@ -108,23 +87,16 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            startActivity(
-                Intent(
-                    this,
-                    LoginActivity::class.java
-                )
-            )
-
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
         }
-        val accFirebase =
-            firebaseDatabase.getReference("User")
+
+        val accFirebase = firebaseDatabase.getReference("User")
 
         Log.d("MainActivity", "indexAcc: $indexAcc")
 
         // ================= AMBIL DATA USER =================
-
         accFirebase.child("user_$indexAcc")
             .addValueEventListener(object : ValueEventListener {
 
@@ -132,29 +104,24 @@ class MainActivity : AppCompatActivity() {
 
                     if (snapshot.exists()) {
 
-                        val id =
-                            snapshot.child("id")
-                                .value?.toString() ?: ""
+                        val id = snapshot.child("id")
+                            .value?.toString() ?: ""
 
                         // simpan session
-                        getSharedPreferences(
-                            "ACCOUNT",
-                            MODE_PRIVATE
-                        ).edit()
+                        getSharedPreferences("ACCOUNT", MODE_PRIVATE)
+                            .edit()
                             .putString("deviceID", id)
                             .putInt("index", indexAcc)
                             .putBoolean("isLogin", true)
                             .apply()
 
-                        // load notif setelah deviceID ada
+                        // load notif
                         loadNotifications(id)
 
                     } else {
 
-                        getSharedPreferences(
-                            "ACCOUNT",
-                            MODE_PRIVATE
-                        ).edit()
+                        getSharedPreferences("ACCOUNT", MODE_PRIVATE)
+                            .edit()
                             .putString("deviceID", "")
                             .putInt("index", -1)
                             .putBoolean("isLogin", false)
@@ -163,7 +130,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
                     Toast.makeText(
                         this@MainActivity,
                         "Error: ${error.message}",
@@ -173,22 +139,16 @@ class MainActivity : AppCompatActivity() {
             })
 
         // ================= DEFAULT FRAGMENT =================
-
         if (savedInstanceState == null) {
 
-            currentFragment =
-                HomeFragment()
+            currentFragment = HomeFragment()
 
             supportFragmentManager.beginTransaction()
-                .add(
-                    R.id.mainFragment,
-                    currentFragment!!
-                )
+                .add(R.id.mainFragment, currentFragment!!)
                 .commit()
         }
 
         // ================= BOTTOM NAV =================
-
         homeBt.setOnClickListener {
             replaceFragment(HomeFragment(), 0)
         }
@@ -202,12 +162,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ================= LOAD NOTIF =================
-
+    // ================= LOAD NOTIF (FIX NO SPAM) =================
     private fun loadNotifications(deviceID: String) {
-
-        var firstLoad = true
-        var lastNotifCount = 0
 
         firebaseDatabase.getReference("Hics")
             .child(deviceID)
@@ -218,79 +174,27 @@ class MainActivity : AppCompatActivity() {
 
                     var unreadCount = 0
 
-                    // ================= UNREAD =================
-
                     for (data in snapshot.children) {
 
-                        val isRead =
-                            data.child("isRead")
-                                .getValue(Boolean::class.java)
-                                ?: false
+                        val isRead = data.child("isRead")
+                            .getValue(Boolean::class.java) ?: false
 
-                        if (!isRead) {
-                            unreadCount++
-                        }
+                        if (!isRead) unreadCount++
                     }
 
-                    // badge
+                    // ✅ hanya badge (tidak tampilkan notif lagi)
                     if (unreadCount > 0) {
-
-                        badgeNotif.visibility =
-                            View.VISIBLE
-
-                        badgeNotif.text =
-                            unreadCount.toString()
-
+                        badgeNotif.visibility = View.VISIBLE
+                        badgeNotif.text = unreadCount.toString()
                     } else {
-
-                        badgeNotif.visibility =
-                            View.GONE
+                        badgeNotif.visibility = View.GONE
                     }
-
-                    // ================= STATUS BAR =================
-
-                    val totalNotif =
-                        snapshot.childrenCount.toInt()
-
-                    // pertama kali buka app
-                    if (firstLoad) {
-
-                        lastNotifCount = totalNotif
-                        firstLoad = false
-                        return
-                    }
-
-                    // notif baru masuk
-                    if (totalNotif > lastNotifCount) {
-
-                        val latestNotif =
-                            snapshot.children.last()
-
-                        val title =
-                            latestNotif?.child("title")
-                                ?.value.toString()
-
-                        val message =
-                            latestNotif?.child("message")
-                                ?.value.toString()
-
-                        NotificationHelper.showNotification(
-                            this@MainActivity,
-                            title,
-                            message
-                        )
-                    }
-
-                    lastNotifCount = totalNotif
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
 
         // ================= CLICK NOTIF =================
-
         btnNotif.setOnClickListener {
 
             firebaseDatabase.getReference("Hics")
@@ -300,119 +204,58 @@ class MainActivity : AppCompatActivity() {
                 .addOnSuccessListener { snapshot ->
 
                     for (data in snapshot.children) {
-
-                        data.ref.child("isRead")
-                            .setValue(true)
+                        data.ref.child("isRead").setValue(true)
                     }
 
                     startActivity(
-                        Intent(
-                            this@MainActivity,
-                            NotifActivity::class.java
-                        )
+                        Intent(this@MainActivity, NotifActivity::class.java)
                     )
                 }
         }
     }
+
     // ================= REPLACE FRAGMENT =================
+    private fun replaceFragment(fragment: Fragment, mode: Int) {
 
-    private fun replaceFragment(
-        fragment: Fragment,
-        mode: Int
-    ) {
-
-        val transaction =
-            supportFragmentManager.beginTransaction()
+        val transaction = supportFragmentManager.beginTransaction()
 
         when (mode) {
 
             0 -> {
+                imgHome.setImageResource(R.drawable.home_green)
+                tvHome.setTextColor(resources.getColor(R.color.hijau))
 
-                imgHome.setImageResource(
-                    R.drawable.home_green
-                )
+                imgChart.setImageResource(R.drawable.chart_abu)
+                tvChart.setTextColor(resources.getColor(R.color.abu))
 
-                tvHome.setTextColor(
-                    resources.getColor(R.color.hijau)
-                )
-
-                imgChart.setImageResource(
-                    R.drawable.chart_abu
-                )
-
-                tvChart.setTextColor(
-                    resources.getColor(R.color.abu)
-                )
-
-                imgSetting.setImageResource(
-                    R.drawable.setting_grey
-                )
-
-                tvSetting.setTextColor(
-                    resources.getColor(R.color.abu)
-                )
+                imgSetting.setImageResource(R.drawable.setting_grey)
+                tvSetting.setTextColor(resources.getColor(R.color.abu))
             }
 
             1 -> {
+                imgHome.setImageResource(R.drawable.home_grey)
+                tvHome.setTextColor(resources.getColor(R.color.abu))
 
-                imgHome.setImageResource(
-                    R.drawable.home_grey
-                )
+                imgChart.setImageResource(R.drawable.chart_hijau)
+                tvChart.setTextColor(resources.getColor(R.color.hijau))
 
-                tvHome.setTextColor(
-                    resources.getColor(R.color.abu)
-                )
-
-                imgChart.setImageResource(
-                    R.drawable.chart_hijau
-                )
-
-                tvChart.setTextColor(
-                    resources.getColor(R.color.hijau)
-                )
-
-                imgSetting.setImageResource(
-                    R.drawable.setting_grey
-                )
-
-                tvSetting.setTextColor(
-                    resources.getColor(R.color.abu)
-                )
+                imgSetting.setImageResource(R.drawable.setting_grey)
+                tvSetting.setTextColor(resources.getColor(R.color.abu))
             }
 
             2 -> {
+                imgHome.setImageResource(R.drawable.home_grey)
+                tvHome.setTextColor(resources.getColor(R.color.abu))
 
-                imgHome.setImageResource(
-                    R.drawable.home_grey
-                )
+                imgChart.setImageResource(R.drawable.chart_abu)
+                tvChart.setTextColor(resources.getColor(R.color.abu))
 
-                tvHome.setTextColor(
-                    resources.getColor(R.color.abu)
-                )
-
-                imgChart.setImageResource(
-                    R.drawable.chart_abu
-                )
-
-                tvChart.setTextColor(
-                    resources.getColor(R.color.abu)
-                )
-
-                imgSetting.setImageResource(
-                    R.drawable.setting_green
-                )
-
-                tvSetting.setTextColor(
-                    resources.getColor(R.color.hijau)
-                )
+                imgSetting.setImageResource(R.drawable.setting_green)
+                tvSetting.setTextColor(resources.getColor(R.color.hijau))
             }
         }
 
-        transaction.replace(
-            R.id.mainFragment,
-            fragment
-        )
-
+        transaction.replace(R.id.mainFragment, fragment)
         transaction.commit()
 
         currentFragment = fragment
