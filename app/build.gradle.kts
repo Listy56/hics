@@ -52,6 +52,7 @@ dependencies {
     implementation ("androidx.core:core-ktx:1.13.1")
     implementation ("androidx.appcompat:appcompat:1.7.0")
     implementation ("com.itextpdf:itextg:5.5.10")
+    implementation ("com.google.firebase:firebase-messaging")
 
 
     // FIREBASE (PAKAI BOM)

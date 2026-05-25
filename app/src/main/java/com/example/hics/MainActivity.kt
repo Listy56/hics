@@ -13,6 +13,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.*
+import com.google.firebase.messaging.FirebaseMessaging
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,6 +48,32 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         NotificationHelper.createChannel(this)
+
+        // ================= IZIN NOTIF =================
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+
+            if (
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    100
+                )
+            }
+        }
+
+        // ================= FCM TOKEN =================
+        FirebaseMessaging.getInstance().token
+            .addOnSuccessListener {
+
+                Log.d("FCM_TOKEN", it)
+
+            }
 
         val root = findViewById<View>(R.id.main)
 

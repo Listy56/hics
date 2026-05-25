@@ -116,14 +116,15 @@ object NotificationHelper {
             val notifRef =
                 notifRoot.child(nextIndex.toString())
 
-            val notif = NotificationModel(
-                title = title,
-                message = message,
-                time = System.currentTimeMillis(),
-                isRead = false
+            val notif = hashMapOf(
+                "title" to title,
+                "message" to message,
+                "time" to System.currentTimeMillis(),
+                "isRead" to false
             )
 
             notifRef.setValue(notif)
+
         }
     }
 }
