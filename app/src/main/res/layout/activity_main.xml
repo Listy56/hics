@@ -11,7 +11,6 @@
 
     <!--    layout dasar-->
     <LinearLayout
-        android:id="@+id/mainContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -25,7 +24,7 @@
             android:layout_height="0dp"
             android:weightSum="4"
             android:orientation="horizontal"
-            android:layout_weight="25">
+            android:layout_weight="30">
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -35,38 +34,34 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:layout_weight="2.5"
-                android:layout_marginBottom="@dimen/header_bottom_spacing">
+                android:layout_weight="2.5">
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_marginBottom="@dimen/header_logo_spacing"
+                    android:layout_marginBottom="10dp"
                     android:src="@drawable/logo"/>
+
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/header_title_spacing"
-                    android:textColor="@color/white"
+                    android:layout_height="38dp"
+                    android:fontFamily="@font/poppinsbold"
                     android:text="HICS"
-                    android:textSize="28sp"
-                    android:fontFamily="@font/poppinsbold"/>
-
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-10dp"
-                    android:fontFamily="@font/poppinmedium"
-                    android:gravity="center"
                     android:text="Hydro-IoT Control System"
                     android:textColor="@color/white"
-                    android:textSize="18sp" />
+                    android:gravity="center"
+                    android:fontFamily="@font/poppinmedium"
+                    android:textSize="18sp"/>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:gravity="top|center_horizontal">
+                android:gravity="center_horizontal"
+                android:layout_weight="0.75">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -76,9 +71,9 @@
                         android:id="@+id/btn_notif"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="6dp"
                         android:paddingRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="4dp"
                         android:src="@drawable/notif" />
 
                     <TextView
