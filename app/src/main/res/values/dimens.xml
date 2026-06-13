@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="header_logo_spacing">8dp</dimen>
+    <dimen name="header_title_spacing">6dp</dimen>
+    <dimen name="header_bottom_spacing">20dp</dimen>
+</resources>
