@@ -3,6 +3,7 @@
 package com.example.hics
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,6 +19,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -76,6 +79,25 @@ class MainActivity : AppCompatActivity() {
             }
 
         val root = findViewById<View>(R.id.main)
+        val mainContent = findViewById<View>(R.id.mainContent)
+        val initialMainContentTopPadding = mainContent.paddingTop
+
+        ViewCompat.setOnApplyWindowInsetsListener(mainContent) { view, insets ->
+            val statusBarTop = if (Build.VERSION.SDK_INT >= 35) {
+                insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            } else {
+                0
+            }
+
+            view.setPadding(
+                view.paddingLeft,
+                initialMainContentTopPadding + statusBarTop,
+                view.paddingRight,
+                view.paddingBottom
+            )
+
+            insets
+        }
 
         // fade in
         root.alpha = 0f
