@@ -1,7 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_home"
-    android:padding="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -17,6 +19,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,6 +28,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardUseCompatPadding="true"
                 android:backgroundTint="@color/white"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="2dp">
@@ -33,8 +37,8 @@
                     android:layout_height="match_parent"
                     android:paddingRight="10dp"
                     android:paddingLeft="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
@@ -255,14 +259,16 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 app:cardCornerRadius="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
+                app:cardUseCompatPadding="true"
                 app:cardElevation="2dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginRight="10dp"
-                    android:paddingTop="5dp"
+                    android:paddingTop="10dp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
@@ -347,15 +353,16 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 app:cardCornerRadius="10dp"
-                android:layout_marginTop="20dp"
+                app:cardUseCompatPadding="true"
+                android:layout_marginTop="5dp"
                 app:cardElevation="2dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingRight="0dp"
                     android:paddingLeft="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
@@ -433,15 +440,16 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 app:cardCornerRadius="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
+                app:cardUseCompatPadding="true"
                 app:cardElevation="2dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingRight="0dp"
                     android:paddingLeft="10dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
@@ -503,9 +511,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/hijau_end"
-                android:layout_marginTop="15dp"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp">
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="2dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

@@ -68,7 +68,7 @@
                     android:fontFamily="@font/poppinmedium"
                     android:autoSizeTextType="uniform"
                     android:autoSizeMinTextSize="8sp"
-                    android:autoSizeMaxTextSize="18sp"/>
+                    android:autoSizeMaxTextSize="20sp"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/notifContainer"
@@ -127,7 +127,6 @@
                 android:id="@+id/bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 app:cardElevation="10dp"
                 android:background="@color/white"
                 android:orientation="vertical">

@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_home"
-    android:padding="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,6 +16,15 @@
         android:fontFamily="@font/poppinmedium"
         android:textColor="@color/hijau_end"
         android:layout_gravity="center"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvInputDevice"
@@ -24,7 +35,9 @@
         android:textColor="@color/hijau_end"
         android:textSize="14sp"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="5dp"/>
+
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/layoutInputDevice"
@@ -32,7 +45,7 @@
         android:layout_height="wrap_content"
         app:cardElevation="2dp"
         android:backgroundTint="@color/white"
-        app:cardCornerRadius="50dp">
+        app:cardCornerRadius="60dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +71,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/hijau_end"
-        app:cardCornerRadius="30dp">
+        app:cardCornerRadius="60dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,6 +93,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/white"
         app:cardCornerRadius="10dp"
+        app:cardUseCompatPadding="true"
         app:cardElevation="2dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -127,7 +141,7 @@
                             android:fontFamily="@font/poppinmedium"
                             android:textColor="@color/hijau_end"
                             android:textSize="14sp"
-                            android:layout_weight="2"
+                            android:layout_weight="1.5"
                             android:text="ID Perangkat"/>
 
                         <TextView
@@ -139,7 +153,7 @@
                             android:textSize="12sp"
                             android:textStyle="italic"
                             android:textAlignment="textEnd"
-                            android:layout_weight="2"
+                            android:layout_weight="2.5"
                             android:paddingRight="10dp"
                             android:text="ID Perangkat"/>
                     </LinearLayout>
@@ -183,7 +197,7 @@
                             android:fontFamily="@font/poppinmedium"
                             android:textColor="@color/hijau_end"
                             android:textSize="14sp"
-                            android:layout_weight="2"
+                            android:layout_weight="1.5"
                             android:text="Nama WiFi"/>
 
                         <TextView
@@ -196,7 +210,7 @@
                             android:textStyle="italic"
                             android:paddingRight="10dp"
                             android:textAlignment="textEnd"
-                            android:layout_weight="2"
+                            android:layout_weight="2.5"
                             android:text="Nama Wifi"/>
                     </LinearLayout>
 
@@ -269,7 +283,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/hijau_end"
-        app:cardCornerRadius="30dp">
+        app:cardCornerRadius="60dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -290,5 +304,6 @@
         android:layout_width="wrap_content"
         android:layout_gravity="center"
         android:layout_height="match_parent"/>
-
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_home"
         android:orientation="vertical"
-        android:padding="16dp">
+        >
 
         <!-- TITLE -->
         <TextView
@@ -21,12 +24,20 @@
             android:text="Kontrol"
             android:textColor="@color/hijau_end"
             android:textSize="20sp" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         <!-- MODE -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
+            app:cardUseCompatPadding="true"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:backgroundTint="@android:color/white"
             app:cardCornerRadius="14dp"
             app:cardElevation="3dp">
@@ -36,7 +47,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="12dp">
+                android:layout_margin="12dp"
+                >
 
                 <ImageView
                     android:layout_width="22dp"
@@ -86,7 +98,8 @@
             android:id="@+id/tvStatusMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="5dp"
             android:fontFamily="@font/poppinsregular"
             android:text="Sistem berjalan otomatis berdasarkan threshold"
             android:textColor="#666666"
@@ -97,20 +110,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <!-- POMPA -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/pumpLayout"
-                android:layout_width="0dp"
-                android:layout_height="130dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="5dp"
-                android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="3dp">
+                app:cardElevation="3dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cardUseCompatPadding="true"
+                android:backgroundTint="@android:color/white"
+                >
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -131,7 +145,7 @@
                         android:fontFamily="@font/poppinmedium"
                         android:text="Pompa Air"
                         android:textColor="#08AAA3"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                     <LinearLayout
                         android:id="@+id/switchPump"
@@ -167,11 +181,11 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/phUpLayout"
                 android:layout_width="0dp"
-                android:layout_height="130dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginHorizontal="2.5dp"
                 android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="14dp"
+                app:cardUseCompatPadding="true"
                 app:cardElevation="3dp">
 
                 <LinearLayout
@@ -193,7 +207,7 @@
                         android:fontFamily="@font/poppinmedium"
                         android:text="Penambah pH"
                         android:textColor="#08AAA3"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                     <LinearLayout
                         android:id="@+id/switchPhUp"
@@ -229,9 +243,9 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/phDownLayout"
                 android:layout_width="0dp"
-                android:layout_height="130dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="5dp"
+                app:cardUseCompatPadding="true"
                 android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="14dp"
                 app:cardElevation="3dp">
@@ -255,7 +269,7 @@
                         android:fontFamily="@font/poppinmedium"
                         android:text="Penurun pH"
                         android:textColor="#08AAA3"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                     <LinearLayout
                         android:id="@+id/switchPhDown"
@@ -293,7 +307,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -303,14 +316,14 @@
                 android:layout_width="0dp"
                 android:layout_height="130dp"
                 android:layout_weight="1"
-                android:layout_marginEnd="5dp"
                 android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="14dp"
+                app:cardUseCompatPadding="true"
                 app:cardElevation="3dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:padding="10dp">
@@ -327,7 +340,7 @@
                         android:fontFamily="@font/poppinmedium"
                         android:text="Penambah Nutrisi"
                         android:textColor="#08AAA3"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                     <LinearLayout
                         android:id="@+id/switchNutrisiUp"
@@ -365,14 +378,14 @@
                 android:layout_width="0dp"
                 android:layout_height="130dp"
                 android:layout_weight="1"
-                android:layout_marginStart="5dp"
                 android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="14dp"
+                app:cardUseCompatPadding="true"
                 app:cardElevation="3dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:padding="10dp">
@@ -389,7 +402,7 @@
                         android:fontFamily="@font/poppinmedium"
                         android:text="Penurun Nutrisi"
                         android:textColor="#08AAA3"
-                        android:textSize="12sp" />
+                        android:textSize="11sp" />
 
                     <LinearLayout
                         android:id="@+id/switchNutrisiDown"
@@ -424,5 +437,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
-</ScrollView>
+        </ScrollView>
+    </LinearLayout>
+</LinearLayout>

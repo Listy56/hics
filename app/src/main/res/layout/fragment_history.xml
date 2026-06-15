@@ -319,7 +319,7 @@
                         android:fontFamily="@font/poppinsbold"
                         android:text="Total Data : "
                         android:textColor="@color/hijau_end"
-                        android:textSize="13sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvTotalData"
