@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 app:cardCornerRadius="10dp"
+                app:cardUseCompatPadding="true"
                 app:cardElevation="2dp">
 
                 <LinearLayout
@@ -112,6 +113,7 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/white"
                 app:cardCornerRadius="10dp"
+                app:cardUseCompatPadding="true"
                 app:cardElevation="2dp">
 
                 <LinearLayout
