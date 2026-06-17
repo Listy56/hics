@@ -136,22 +136,24 @@
         <!-- Button Google -->
 
             <!-- Register -->
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLoginGoogle"
-                android:layout_width="342dp"
-                android:layout_height="48dp"
-                android:layout_marginLeft="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@android:color/white"
+
                 android:text="Lanjutkan dengan Google"
                 android:textAllCaps="false"
                 android:textColor="@android:color/black"
 
+                android:backgroundTint="@android:color/white"
+
+                app:cornerRadius="8dp"
                 app:icon="@drawable/ic_google"
                 app:iconGravity="textStart"
                 app:iconPadding="12dp"
-                app:iconSize="24dp"
+                app:iconSize="20dp"
                 app:iconTint="@null" />
 
             <TextView
