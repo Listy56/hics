@@ -22,7 +22,7 @@ class HomeFragment : Fragment() {
     private lateinit var phTextView: TextView
     private lateinit var nutrisiTextView: TextView
     private lateinit var statusSwitch: TextView
-    private lateinit var intensitas: TextView
+    private lateinit var humidityText: TextView
     private lateinit var airTemp: TextView
     private lateinit var waterTemp: TextView
     private lateinit var waterLevelPercent: TextView
@@ -39,7 +39,7 @@ class HomeFragment : Fragment() {
     var suhuAir = 0.0
     var pH = 0.0
     var nutrisi = 0
-    var intensitasCahaya = 0
+    var humidity = 0
     var level = 0.0
     var isOn = true
 
@@ -80,7 +80,7 @@ class HomeFragment : Fragment() {
         phTextView = view.findViewById(R.id.tvPh)
         nutrisiTextView = view.findViewById(R.id.tvNutrisi)
         statusSwitch = view.findViewById(R.id.statusSwitch)
-        intensitas = view.findViewById(R.id.tvIntensitas)
+        humidityText = view.findViewById(R.id.tvHumidity)
         airTemp = view.findViewById(R.id.airTemp)
         waterTemp = view.findViewById(R.id.waterTemp)
         waterLevel = view.findViewById(R.id.waterLevel)
@@ -123,7 +123,7 @@ class HomeFragment : Fragment() {
                 pH = snapshot.child("dataStream/pH").value.toString().toDoubleOrNull() ?: 0.0
                 nutrisi = snapshot.child("dataStream/ppm").value.toString().toIntOrNull() ?: 0
                 level = snapshot.child("dataStream/waterLevel").value.toString().toDoubleOrNull() ?: 0.0
-                intensitasCahaya = snapshot.child("dataStream/light").value.toString().toIntOrNull() ?: 0
+                humidity = snapshot.child("dataStream/humidity").value.toString().toIntOrNull() ?: 0
                 isOn = snapshot.child("control/waterPump").value.toString().toBoolean()
 
                 // ===== NOTIF =====
@@ -140,7 +140,7 @@ class HomeFragment : Fragment() {
                 // ===== UI =====
                 phTextView.text = pH.toString()
                 nutrisiTextView.text = nutrisi.toString()
-                intensitas.text = intensitasCahaya.toString()
+                humidityText.text = "$humidity%"
                 statusSwitch.text = if (isOn) "ON" else "OFF"
 
                 var displayAirTemp = suhuUdara

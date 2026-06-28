@@ -69,6 +69,7 @@ class ControlFragment : Fragment() {
     private var phDownOn = false
     private var nutrisiUpOn = false
     private var nutrisiDownOn = false
+    private lateinit var layoutWarning: LinearLayout
 
     private var online = false
 
@@ -119,6 +120,8 @@ class ControlFragment : Fragment() {
         circleNutrisiDown = view.findViewById(R.id.circleNutrisiDown)
         statusNutrisiDown = view.findViewById(R.id.statusNutrisiDown)
 
+        layoutWarning = view.findViewById(R.id.layoutWarning)
+
         val accPref =
             requireActivity().getSharedPreferences("ACCOUNT", MODE_PRIVATE)
 
@@ -164,46 +167,15 @@ class ControlFragment : Fragment() {
                             nutrisiDownOn =
                                 snapshot.child("nutrisiDown")
                                     .value.toString().toBoolean()
-
-                            // MODE
-                            if (modeStatus) {
-
-                                mode.text = "Auto"
-                                modeSwitchUI(true)
-
-                                tvStatusMode.visibility = View.VISIBLE
-
-                                // sembunyikan manual control
-                                pumpLayout.visibility = View.GONE
-                                phUpLayout.visibility = View.GONE
-                                phDownLayout.visibility = View.GONE
-                                nutrisiUpLayout.visibility = View.GONE
-                                nutrisiDownLayout.visibility = View.GONE
-
-                            } else {
-
-                                mode.text = "Manual"
-                                modeSwitchUI(false)
-
-                                tvStatusMode.visibility = View.GONE
-
-                                // tampilkan manual control
-                                pumpLayout.visibility = View.VISIBLE
-                                phUpLayout.visibility = View.VISIBLE
-                                phDownLayout.visibility = View.VISIBLE
-                                nutrisiUpLayout.visibility = View.VISIBLE
-                                nutrisiDownLayout.visibility = View.VISIBLE
-
-                                // update UI
-                                pumpSwitchUI(pumpOn)
-                                phUpSwitchUI(phUpOn)
-                                phDownSwitchUI(phDownOn)
-                                nutrisiUpSwitchUI(nutrisiUpOn)
-                                nutrisiDownSwitchUI(nutrisiDownOn)
-                            }
+                            saveLastState()
+                            updateControlUI()
+                            setControlEnabled(true)
 
                         } else {
                             online = false
+                            loadLastState()
+                            updateControlUI()
+                            setControlEnabled(false)
                         }
                     }
 
@@ -216,280 +188,474 @@ class ControlFragment : Fragment() {
                         ).show()
                     }
                 })
-        }
+        }else{
 
-        // ================= MODE =================
+            online = false
+            loadLastState()
+            updateControlUI()
+            setControlEnabled(false)
+
+        }
+// ================= MODE =================
         switchMode.setOnClickListener {
 
-            if (online) {
-
-                vibratePhone()
-
-                modeStatus = !modeStatus
-                modeSwitchUI(modeStatus)
-
-                baseFirebase.child(deviceID!!)
-                    .child("control")
-                    .child("mode")
-                    .setValue(modeStatus)
+            if (!online) {
+                Toast.makeText(
+                    requireContext(),
+                    "Hubungkan Device ID terlebih dahulu.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
+
+            vibratePhone()
+
+            modeStatus = !modeStatus
+            updateControlUI()
+
+            baseFirebase.child(deviceID!!)
+                .child("control")
+                .child("mode")
+                .setValue(modeStatus)
+                .addOnSuccessListener {
+                    saveLastState()
+                }
+                .addOnFailureListener {
+
+                    modeStatus = !modeStatus
+                    updateControlUI()
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Gagal mengubah mode",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
         }
 
-        // ================= POMPA =================
+// ================= POMPA =================
         switchPump.setOnClickListener {
 
-            if (online) {
-
-                vibratePhone()
-
-                pumpOn = !pumpOn
-                pumpSwitchUI(pumpOn)
-
-                baseFirebase.child(deviceID!!)
-                    .child("control")
-                    .child("waterPump")
-                    .setValue(pumpOn)
+            if (!online) {
+                Toast.makeText(
+                    requireContext(),
+                    "Hubungkan Device ID terlebih dahulu.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
+
+            vibratePhone()
+
+            pumpOn = !pumpOn
+            pumpSwitchUI(pumpOn)
+
+            baseFirebase.child(deviceID!!)
+                .child("control")
+                .child("waterPump")
+                .setValue(pumpOn)
+                .addOnSuccessListener {
+                    saveLastState()
+                }
+                .addOnFailureListener {
+
+                    pumpOn = !pumpOn
+                    pumpSwitchUI(pumpOn)
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Gagal mengubah status pompa",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
         }
 
-        // ================= PH UP =================
+// ================= PH UP =================
         switchPhUp.setOnClickListener {
 
-            if (online) {
-
-                vibratePhone()
-
-                phUpOn = !phUpOn
-                phUpSwitchUI(phUpOn)
-
-                baseFirebase.child(deviceID!!)
-                    .child("control")
-                    .child("phUp")
-                    .setValue(phUpOn)
+            if (!online) {
+                Toast.makeText(
+                    requireContext(),
+                    "Hubungkan Device ID terlebih dahulu.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
+
+            vibratePhone()
+
+            phUpOn = !phUpOn
+            phUpSwitchUI(phUpOn)
+
+            baseFirebase.child(deviceID!!)
+                .child("control")
+                .child("phUp")
+                .setValue(phUpOn)
+                .addOnSuccessListener {
+                    saveLastState()
+                }
+                .addOnFailureListener {
+
+                    phUpOn = !phUpOn
+                    phUpSwitchUI(phUpOn)
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Gagal mengubah PH Up",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
         }
 
-        // ================= PH DOWN =================
+// ================= PH DOWN =================
         switchPhDown.setOnClickListener {
 
-            if (online) {
-
-                vibratePhone()
-
-                phDownOn = !phDownOn
-                phDownSwitchUI(phDownOn)
-
-                baseFirebase.child(deviceID!!)
-                    .child("control")
-                    .child("phDown")
-                    .setValue(phDownOn)
+            if (!online) {
+                Toast.makeText(
+                    requireContext(),
+                    "Hubungkan Device ID terlebih dahulu.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
+
+            vibratePhone()
+
+            phDownOn = !phDownOn
+            phDownSwitchUI(phDownOn)
+
+            baseFirebase.child(deviceID!!)
+                .child("control")
+                .child("phDown")
+                .setValue(phDownOn)
+                .addOnSuccessListener {
+                    saveLastState()
+                }
+                .addOnFailureListener {
+
+                    phDownOn = !phDownOn
+                    phDownSwitchUI(phDownOn)
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Gagal mengubah PH Down",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
         }
 
-        // ================= NUTRISI UP =================
+// ================= NUTRISI UP =================
         switchNutrisiUp.setOnClickListener {
 
-            if (online) {
-
-                vibratePhone()
-
-                nutrisiUpOn = !nutrisiUpOn
-                nutrisiUpSwitchUI(nutrisiUpOn)
-
-                baseFirebase.child(deviceID!!)
-                    .child("control")
-                    .child("nutrisiUp")
-                    .setValue(nutrisiUpOn)
+            if (!online) {
+                Toast.makeText(
+                    requireContext(),
+                    "Hubungkan Device ID terlebih dahulu.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
+
+            vibratePhone()
+
+            nutrisiUpOn = !nutrisiUpOn
+            nutrisiUpSwitchUI(nutrisiUpOn)
+
+            baseFirebase.child(deviceID!!)
+                .child("control")
+                .child("nutrisiUp")
+                .setValue(nutrisiUpOn)
+                .addOnSuccessListener {
+                    saveLastState()
+                }
+                .addOnFailureListener {
+
+                    nutrisiUpOn = !nutrisiUpOn
+                    nutrisiUpSwitchUI(nutrisiUpOn)
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Gagal mengubah Nutrisi Up",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
         }
 
-        // ================= NUTRISI DOWN =================
+// ================= NUTRISI DOWN =================
         switchNutrisiDown.setOnClickListener {
 
-            if (online) {
-
-                vibratePhone()
-
-                nutrisiDownOn = !nutrisiDownOn
-                nutrisiDownSwitchUI(nutrisiDownOn)
-
-                baseFirebase.child(deviceID!!)
-                    .child("control")
-                    .child("nutrisiDown")
-                    .setValue(nutrisiDownOn)
+            if (!online) {
+                Toast.makeText(
+                    requireContext(),
+                    "Hubungkan Device ID terlebih dahulu.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
-        }
-    }
 
+            vibratePhone()
+
+            nutrisiDownOn = !nutrisiDownOn
+            nutrisiDownSwitchUI(nutrisiDownOn)
+
+            baseFirebase.child(deviceID!!)
+                .child("control")
+                .child("nutrisiDown")
+                .setValue(nutrisiDownOn)
+                .addOnSuccessListener {
+                    saveLastState()
+                }
+                .addOnFailureListener {
+
+                    nutrisiDownOn = !nutrisiDownOn
+                    nutrisiDownSwitchUI(nutrisiDownOn)
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Gagal mengubah Nutrisi Down",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+        }
+        }
     // ================= MODE UI =================
     private fun modeSwitchUI(isOn: Boolean) {
 
-        if (isOn) {
+        switchMode.post {
 
-            switchMode.setBackgroundResource(R.drawable.bg_switch_on)
+            if (isOn) {
 
-            circleMode.animate()
-                .translationX(
+                switchMode.setBackgroundResource(R.drawable.bg_switch_on)
+
+                circleMode.translationX =
                     (switchMode.width - circleMode.width - 12).toFloat()
-                )
-                .setDuration(200)
-                .start()
 
-        } else {
+            } else {
 
-            switchMode.setBackgroundResource(R.drawable.bg_switch_off)
+                switchMode.setBackgroundResource(R.drawable.bg_switch_off)
 
-            circleMode.animate()
-                .translationX(0f)
-                .setDuration(200)
-                .start()
+                circleMode.translationX = 0f
+            }
         }
     }
 
     // ================= POMPA UI =================
     private fun pumpSwitchUI(isOn: Boolean) {
 
-        if (isOn) {
+        switchPump.post {
 
-            switchPump.setBackgroundResource(R.drawable.bg_switch_on)
+            if (isOn) {
 
-            circlePump.animate()
-                .translationX(
+                switchPump.setBackgroundResource(R.drawable.bg_switch_on)
+
+                circlePump.translationX =
                     (switchPump.width - circlePump.width - 12).toFloat()
-                )
-                .setDuration(200)
-                .start()
 
-            statusSwitch.text = "ON"
+                statusSwitch.text = "ON"
 
-        } else {
+            } else {
 
-            switchPump.setBackgroundResource(R.drawable.bg_switch_off)
+                switchPump.setBackgroundResource(R.drawable.bg_switch_off)
 
-            circlePump.animate()
-                .translationX(0f)
-                .setDuration(200)
-                .start()
+                circlePump.translationX = 0f
 
-            statusSwitch.text = "OFF"
+                statusSwitch.text = "OFF"
+            }
         }
     }
 
     // ================= PH UP UI =================
     private fun phUpSwitchUI(isOn: Boolean) {
 
-        if (isOn) {
+        switchPhUp.post {
 
-            switchPhUp.setBackgroundResource(R.drawable.bg_switch_on)
+            if (isOn) {
 
-            circlePhUp.animate()
-                .translationX(
+                switchPhUp.setBackgroundResource(R.drawable.bg_switch_on)
+
+                circlePhUp.translationX =
                     (switchPhUp.width - circlePhUp.width - 12).toFloat()
-                )
-                .setDuration(200)
-                .start()
 
-            statusPhUp.text = "ON"
+                statusPhUp.text = "ON"
 
-        } else {
+            } else {
 
-            switchPhUp.setBackgroundResource(R.drawable.bg_switch_off)
+                switchPhUp.setBackgroundResource(R.drawable.bg_switch_off)
 
-            circlePhUp.animate()
-                .translationX(0f)
-                .setDuration(200)
-                .start()
+                circlePhUp.translationX = 0f
 
-            statusPhUp.text = "OFF"
+                statusPhUp.text = "OFF"
+            }
         }
     }
 
     // ================= PH DOWN UI =================
     private fun phDownSwitchUI(isOn: Boolean) {
 
-        if (isOn) {
+        switchPhDown.post {
 
-            switchPhDown.setBackgroundResource(R.drawable.bg_switch_on)
+            if (isOn) {
 
-            circlePhDown.animate()
-                .translationX(
+                switchPhDown.setBackgroundResource(R.drawable.bg_switch_on)
+
+                circlePhDown.translationX =
                     (switchPhDown.width - circlePhDown.width - 12).toFloat()
-                )
-                .setDuration(200)
-                .start()
 
-            statusPhDown.text = "ON"
+                statusPhDown.text = "ON"
 
-        } else {
+            } else {
 
-            switchPhDown.setBackgroundResource(R.drawable.bg_switch_off)
+                switchPhDown.setBackgroundResource(R.drawable.bg_switch_off)
 
-            circlePhDown.animate()
-                .translationX(0f)
-                .setDuration(200)
-                .start()
+                circlePhDown.translationX = 0f
 
-            statusPhDown.text = "OFF"
+                statusPhDown.text = "OFF"
+            }
         }
     }
 
     // ================= NUTRISI UP UI =================
     private fun nutrisiUpSwitchUI(isOn: Boolean) {
 
-        if (isOn) {
+        switchNutrisiUp.post {
 
-            switchNutrisiUp.setBackgroundResource(R.drawable.bg_switch_on)
+            if (isOn) {
 
-            circleNutrisiUp.animate()
-                .translationX(
+                switchNutrisiUp.setBackgroundResource(R.drawable.bg_switch_on)
+
+                circleNutrisiUp.translationX =
                     (switchNutrisiUp.width - circleNutrisiUp.width - 12).toFloat()
-                )
-                .setDuration(200)
-                .start()
 
-            statusNutrisiUp.text = "ON"
+                statusNutrisiUp.text = "ON"
 
-        } else {
+            } else {
 
-            switchNutrisiUp.setBackgroundResource(R.drawable.bg_switch_off)
+                switchNutrisiUp.setBackgroundResource(R.drawable.bg_switch_off)
 
-            circleNutrisiUp.animate()
-                .translationX(0f)
-                .setDuration(200)
-                .start()
+                circleNutrisiUp.translationX = 0f
 
-            statusNutrisiUp.text = "OFF"
+                statusNutrisiUp.text = "OFF"
+            }
         }
     }
 
     // ================= NUTRISI DOWN UI =================
     private fun nutrisiDownSwitchUI(isOn: Boolean) {
 
-        if (isOn) {
+        switchNutrisiDown.post {
 
-            switchNutrisiDown.setBackgroundResource(R.drawable.bg_switch_on)
+            if (isOn) {
 
-            circleNutrisiDown.animate()
-                .translationX(
+                switchNutrisiDown.setBackgroundResource(R.drawable.bg_switch_on)
+
+                circleNutrisiDown.translationX =
                     (switchNutrisiDown.width - circleNutrisiDown.width - 12).toFloat()
-                )
-                .setDuration(200)
-                .start()
 
-            statusNutrisiDown.text = "ON"
+                statusNutrisiDown.text = "ON"
+
+            } else {
+
+                switchNutrisiDown.setBackgroundResource(R.drawable.bg_switch_off)
+
+                circleNutrisiDown.translationX = 0f
+
+                statusNutrisiDown.text = "OFF"
+            }
+        }
+    }
+
+    private fun setControlEnabled(enable: Boolean) {
+
+        // Switch tetap bisa diklik agar Toast tetap muncul
+        switchMode.isEnabled = true
+        switchPump.isEnabled = true
+        switchPhUp.isEnabled = true
+        switchPhDown.isEnabled = true
+        switchNutrisiUp.isEnabled = true
+        switchNutrisiDown.isEnabled = true
+
+        // Efek abu-abu saat offline
+        switchMode.alpha = if (enable) 1f else 0.5f
+        switchPump.alpha = if (enable) 1f else 0.5f
+        switchPhUp.alpha = if (enable) 1f else 0.5f
+        switchPhDown.alpha = if (enable) 1f else 0.5f
+        switchNutrisiUp.alpha = if (enable) 1f else 0.5f
+        switchNutrisiDown.alpha = if (enable) 1f else 0.5f
+
+        pumpLayout.alpha = if (enable) 1f else 0.5f
+        phUpLayout.alpha = if (enable) 1f else 0.5f
+        phDownLayout.alpha = if (enable) 1f else 0.5f
+        nutrisiUpLayout.alpha = if (enable) 1f else 0.5f
+        nutrisiDownLayout.alpha = if (enable) 1f else 0.5f
+
+        mode.alpha = if (enable) 1f else 0.5f
+        tvStatusMode.alpha = if (enable) 1f else 0.5f
+
+        layoutWarning.visibility =
+            if (enable) View.GONE else View.VISIBLE
+    }
+    private fun saveLastState() {
+
+        val pref =
+            requireContext().getSharedPreferences("CONTROL_STATE", MODE_PRIVATE)
+
+        pref.edit()
+            .putBoolean("mode", modeStatus)
+            .putBoolean("pump", pumpOn)
+            .putBoolean("phUp", phUpOn)
+            .putBoolean("phDown", phDownOn)
+            .putBoolean("nutrisiUp", nutrisiUpOn)
+            .putBoolean("nutrisiDown", nutrisiDownOn)
+            .apply()
+    }
+    private fun loadLastState() {
+
+        val pref =
+            requireContext().getSharedPreferences("CONTROL_STATE", MODE_PRIVATE)
+
+        modeStatus = pref.getBoolean("mode", false)
+        pumpOn = pref.getBoolean("pump", false)
+        phUpOn = pref.getBoolean("phUp", false)
+        phDownOn = pref.getBoolean("phDown", false)
+        nutrisiUpOn = pref.getBoolean("nutrisiUp", false)
+        nutrisiDownOn = pref.getBoolean("nutrisiDown", false)
+    }
+    private fun updateControlUI() {
+
+        if (modeStatus) {
+
+            mode.text = "Auto"
+            modeSwitchUI(true)
+
+            tvStatusMode.visibility = View.VISIBLE
+
+            pumpLayout.visibility = View.GONE
+            phUpLayout.visibility = View.GONE
+            phDownLayout.visibility = View.GONE
+            nutrisiUpLayout.visibility = View.GONE
+            nutrisiDownLayout.visibility = View.GONE
 
         } else {
 
-            switchNutrisiDown.setBackgroundResource(R.drawable.bg_switch_off)
+            mode.text = "Manual"
+            modeSwitchUI(false)
 
-            circleNutrisiDown.animate()
-                .translationX(0f)
-                .setDuration(200)
-                .start()
+            tvStatusMode.visibility = View.GONE
 
-            statusNutrisiDown.text = "OFF"
+            pumpLayout.visibility = View.VISIBLE
+            phUpLayout.visibility = View.VISIBLE
+            phDownLayout.visibility = View.VISIBLE
+            nutrisiUpLayout.visibility = View.VISIBLE
+            nutrisiDownLayout.visibility = View.VISIBLE
+
+            pumpSwitchUI(pumpOn)
+            phUpSwitchUI(phUpOn)
+            phDownSwitchUI(phDownOn)
+            nutrisiUpSwitchUI(nutrisiUpOn)
+            nutrisiDownSwitchUI(nutrisiDownOn)
         }
     }
+
     // ================= GETAR =================
     private fun vibratePhone() {
 

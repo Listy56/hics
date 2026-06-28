@@ -30,9 +30,11 @@ class MonitoringFragment: Fragment() {
     private lateinit var switchNotif : LinearLayout
     private lateinit var circleNotif : View
     private lateinit var save : CardView
+    private lateinit var layoutWarning: LinearLayout
 
     private lateinit var spinnerInterval : Spinner
     private lateinit var spinnerSuhu : Spinner
+
 
     private var firebaseDatabase = FirebaseDatabase.getInstance()
     private var indexAcc: Int?    = 0
@@ -44,7 +46,7 @@ class MonitoringFragment: Fragment() {
     var phMin: String? = ""
     var phMax: String? = ""
     var ppmMin: String? = ""
-    var ppmMax: String = ""
+    var ppmMax: String? = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +68,7 @@ class MonitoringFragment: Fragment() {
         spinnerInterval  = view.findViewById(R.id.spinnerInterval)
         spinnerSuhu      = view.findViewById(R.id.spinnerSuhu)
         save             = view.findViewById(R.id.save)
+        layoutWarning = view.findViewById(R.id.layoutWarning)
 
         val intervalList = listOf("10", "30", "60", "120")
         val suhuList     = listOf("C", "F")
@@ -81,104 +84,246 @@ class MonitoringFragment: Fragment() {
 
         var baseFirebase = firebaseDatabase.getReference("Hics")
 
-        if (deviceID != null && deviceID.toString().isNotEmpty()) {
-            baseFirebase.child(deviceID.toString()).child("setting").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        spinnerInterval.visibility = View.VISIBLE
-                        spinnerSuhu.visibility     = View.VISIBLE
+        if (!deviceID.isNullOrEmpty()) {
 
-                        phMin = snapshot.child("phMin").value.toString()
-                        phMax = snapshot.child("phMax").value.toString()
-                        ppmMin  = snapshot.child("ppmMin").value.toString()
-                        ppmMax  = snapshot.child("ppmMax").value.toString()
-                        val notifValue = snapshot.child("notifAlert").value
+            baseFirebase.child(deviceID!!)
+                .child("setting")
+                .addValueEventListener(object : ValueEventListener {
 
-                        val notif = when (notifValue) {
-                            is Boolean -> notifValue
-                            is String -> notifValue.toBoolean()
-                            else -> false
+                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                        if (snapshot.exists()) {
+
+                            online = true
+
+                            spinnerInterval.visibility = View.VISIBLE
+                            spinnerSuhu.visibility = View.VISIBLE
+
+                            // ================= DATA FIREBASE =================
+                            phMin = snapshot.child("phMin")
+                                .getValue(String::class.java) ?: ""
+
+                            phMax = snapshot.child("phMax")
+                                .getValue(String::class.java) ?: ""
+
+                            ppmMin = snapshot.child("ppmMin")
+                                .getValue(String::class.java) ?: ""
+
+                            ppmMax = snapshot.child("ppmMax")
+                                .getValue(String::class.java) ?: ""
+
+                            isOn = snapshot.child("notifAlert")
+                                .getValue(Boolean::class.java) ?: false
+
+                            val tempUnit = snapshot.child("tempUnit")
+                                .getValue(String::class.java) ?: "C"
+
+                            val interval = snapshot.child("intervalUpdate")
+                                .getValue(String::class.java) ?: "10"
+
+                            // ================= UPDATE UI =================
+                            etPhMin.hint = phMin
+                            etPhMax.hint = phMax
+                            etPpmMin.hint = ppmMin
+                            etPpmMax.hint = ppmMax
+
+                            updateSwitchUI(isOn)
+
+                            spinnerSuhu.setSelection(
+                                if (tempUnit == "F") 1 else 0
+                            )
+
+                            spinnerInterval.setSelection(
+                                when (interval) {
+                                    "10" -> 0
+                                    "30" -> 1
+                                    "60" -> 2
+                                    "120" -> 3
+                                    else -> 0
+                                }
+                            )
+
+                            // Simpan data terakhir
+                            saveLastState()
+
+                            setMonitoringEnabled(true)
+
+                        } else {
+
+                            // Firebase kosong / device offline
+                            online = false
+
+                            loadLastState()
+
+                            spinnerInterval.visibility = View.VISIBLE
+                            spinnerSuhu.visibility = View.VISIBLE
+
+                            setMonitoringEnabled(false)
                         }
-                        val tUnit  = snapshot.child("tempUnit").value.toString()
-                        val nUnit  = snapshot.child("ppmUnit").value.toString()
-                        val interval = snapshot.child("intervalUpdate").value.toString()
+                    }
 
-                        val intervalIndex = when(interval) {
-                            "10"  -> 0
-                            "30"  -> 1
-                            "60"  -> 2
-                            "120" -> 3
-                            else  -> 0
-                        }
-
-                        val suhuIndex = when(tUnit) {
-                            "C" -> 0
-                            "F" -> 1
-                            else -> 0
-                        }
-
-                        etPhMin.hint = phMin
-                        etPhMax.hint = phMax
-                        etPpmMin.hint = ppmMin
-                        etPpmMax.hint = ppmMax
-
-                        isOn = notif
-                        updateSwitchUI(isOn)
-
-                        spinnerInterval.setSelection(intervalIndex)
-                        spinnerSuhu.setSelection(suhuIndex)
-
-                        online = true
-
-                    } else {
-                        spinnerInterval.visibility = View.GONE
-                        spinnerSuhu.visibility     = View.GONE
+                    override fun onCancelled(error: DatabaseError) {
 
                         online = false
+
+                        loadLastState()
+
+                        spinnerInterval.visibility = View.VISIBLE
+                        spinnerSuhu.visibility = View.VISIBLE
+
+                        setMonitoringEnabled(false)
+
+                        Toast.makeText(
+                            requireContext(),
+                            "Error: ${error.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }
+                })
 
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
-                }
-            })
+        } else {
 
+            online = false
+
+            loadLastState()
+
+            spinnerInterval.visibility = View.VISIBLE
+            spinnerSuhu.visibility = View.VISIBLE
+
+            setMonitoringEnabled(false)
         }
 
         switchNotif.setOnClickListener {
+
+            if(!online){
+
+                Toast.makeText(
+                    requireContext(),
+                    "Hubungkan Device ID terlebih dahulu.",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
             isOn = !isOn
             updateSwitchUI(isOn)
         }
+
         save.setOnClickListener {
-            if(online) {
-                val newPhMax = etPhMax.text.toString().ifEmpty { phMax }
-                val newPhMin = etPhMin.text.toString().ifEmpty { phMin }
-                val newPpmMax = etPpmMax.text.toString().ifEmpty { ppmMax }
-                val newPpmMin = etPpmMin.text.toString().ifEmpty { ppmMin }
 
-                if (deviceID != null && deviceID.toString().isNotEmpty()) {
-                    baseFirebase.child(deviceID!!)
-                        .child("setting")
-                        .updateChildren(
-                            mapOf(
-                                "phMax" to newPhMax,
-                                "phMin" to newPhMin,
-                                "ppmMax" to newPpmMax,
-                                "ppmMin" to newPpmMin,
-                                "notifAlert" to isOn,
-                                "tempUnit" to spinnerSuhu.selectedItem.toString(),
-                                "intervalUpdate" to spinnerInterval.selectedItem.toString()
-                            )
-                        )
-                }
+            // Cek apakah device belum terhubung
+            if (!online) {
+                Toast.makeText(
+                    requireContext(),
+                    "Hubungkan Device ID terlebih dahulu.",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-                Toast.makeText(requireContext(), "Data Updated", Toast.LENGTH_SHORT).show()
-                val fragment = SettingFragment()
-                val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.mainFragment, fragment)
-                transaction.commit()
+                return@setOnClickListener
             }
+
+            // ===== Proses Save =====
+            val newPhMax = etPhMax.text.toString().ifEmpty { phMax }
+            val newPhMin = etPhMin.text.toString().ifEmpty { phMin }
+            val newPpmMax = etPpmMax.text.toString().ifEmpty { ppmMax }
+            val newPpmMin = etPpmMin.text.toString().ifEmpty { ppmMin }
+
+            if (!deviceID.isNullOrEmpty()) {
+                baseFirebase.child(deviceID!!)
+                    .child("setting")
+                    .updateChildren(
+                        mapOf(
+                            "phMax" to newPhMax,
+                            "phMin" to newPhMin,
+                            "ppmMax" to newPpmMax,
+                            "ppmMin" to newPpmMin,
+                            "notifAlert" to isOn,
+                            "tempUnit" to spinnerSuhu.selectedItem.toString(),
+                            "intervalUpdate" to spinnerInterval.selectedItem.toString()
+                        )
+                    )
+
+                // Update variabel agar SharedPreferences menyimpan data terbaru
+                phMin = newPhMin
+                phMax = newPhMax
+                ppmMin = newPpmMin
+                ppmMax = newPpmMax
+
+                saveLastState()
+            }
+
+            Toast.makeText(requireContext(), "Data Updated", Toast.LENGTH_SHORT).show()
+
+            val fragment = SettingFragment()
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.mainFragment, fragment)
+            transaction.commit()
         }
+    }
+    private fun saveLastState() {
+
+        val pref = requireContext().getSharedPreferences("MONITORING_STATE", MODE_PRIVATE)
+
+        pref.edit()
+            .putString("phMin", phMin)
+            .putString("phMax", phMax)
+            .putString("ppmMin", ppmMin)
+            .putString("ppmMax", ppmMax)
+            .putBoolean("notifAlert", isOn)
+            .putString("tempUnit", spinnerSuhu.selectedItem.toString())
+            .putString("interval", spinnerInterval.selectedItem.toString())
+            .apply()
+    }
+    private fun setMonitoringEnabled(enable: Boolean) {
+
+        etPhMin.isEnabled = enable
+        etPhMax.isEnabled = enable
+        etPpmMin.isEnabled = enable
+        etPpmMax.isEnabled = enable
+
+        spinnerInterval.isEnabled = enable
+        spinnerSuhu.isEnabled = enable
+
+        save.alpha = if (enable) 1f else 0.5f
+        switchNotif.alpha = if (enable) 1f else 0.5f
+
+        layoutWarning.visibility =
+            if (enable) View.GONE else View.VISIBLE
+    }
+    private fun loadLastState() {
+
+        val pref = requireContext().getSharedPreferences("MONITORING_STATE", MODE_PRIVATE)
+
+        phMin = pref.getString("phMin", "")
+        phMax = pref.getString("phMax", "")
+        ppmMin = pref.getString("ppmMin", "")
+        ppmMax = pref.getString("ppmMax", "")
+        isOn = pref.getBoolean("notifAlert", false)
+
+        val temp = pref.getString("tempUnit", "C")
+        val interval = pref.getString("interval", "10")
+
+        etPhMin.hint = phMin
+        etPhMax.hint = phMax
+        etPpmMin.hint = ppmMin
+        etPpmMax.hint = ppmMax
+
+        updateSwitchUI(isOn)
+
+        spinnerSuhu.setSelection(
+            if (temp == "F") 1 else 0
+        )
+
+        spinnerInterval.setSelection(
+            when(interval){
+                "10" -> 0
+                "30" -> 1
+                "60" -> 2
+                "120" -> 3
+                else -> 0
+            }
+        )
     }
 
     fun updateSwitchUI(isOn: Boolean) {

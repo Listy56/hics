@@ -80,10 +80,10 @@
         <!-- LIGHT -->
 
         <TextView
-            android:id="@+id/tvLight"
+            android:id="@+id/tvHumidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="100dp"
+            android:minWidth="140dp"
             android:gravity="center"
             android:paddingHorizontal="10dp"
             android:textColor="#2D3A4A"

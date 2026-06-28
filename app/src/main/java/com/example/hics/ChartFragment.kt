@@ -1,5 +1,6 @@
 package com.example.hics
 
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -57,14 +58,14 @@ class ChartFragment : Fragment() {
         "Suhu Air",
         "Suhu Udara",
         "pH",
-        "Intensitas Cahaya"
+        "Kelembapan Udara"
     )
 
     private val periodList = listOf(
         "Daily",
         "Weekly",
         "Monthly",
-        "Yearly"
+
     )
 
     private var selectedDataType = "Nutrisi"
@@ -733,8 +734,8 @@ class ChartFragment : Fragment() {
                                                 timeSnap.child("pH")
                                                     .getValue(Float::class.java)
 
-                                            "Intensitas Cahaya" ->
-                                                timeSnap.child("light")
+                                            "Kelembapan Udara" ->
+                                                timeSnap.child("humidity")
                                                     .getValue(Float::class.java)
 
                                             else -> null
@@ -754,8 +755,6 @@ class ChartFragment : Fragment() {
                                                 "Monthly" ->
                                                     "${daySnap.key}/${monthSnap.key}"
 
-                                                "Yearly" ->
-                                                    monthSnap.key ?: ""
 
                                                 else -> ""
                                             }
@@ -781,8 +780,6 @@ class ChartFragment : Fragment() {
                             "Monthly" ->
                                 tempList.takeLast(30)
 
-                            "Yearly" ->
-                                tempList.takeLast(12)
 
                             else -> tempList
                         }
@@ -832,6 +829,8 @@ class ChartFragment : Fragment() {
                 "No chart data available"
             )
 
+
+
             binding.lineChart.invalidate()
 
             return
@@ -847,7 +846,11 @@ class ChartFragment : Fragment() {
 
         val dataSet = LineDataSet(
             chartEntries,
-            selectedDataType
+            when (selectedDataType) {
+                "Kelembapan Udara" -> "Kelembapan Udara (%)"
+                else -> selectedDataType
+            }
+
         ).apply {
 
             color = colorTeal
@@ -894,6 +897,7 @@ class ChartFragment : Fragment() {
 
         binding.lineChart.data =
             LineData(dataSet)
+        (binding.lineChart.marker as? CustomMarkerView)?.dataType = selectedDataType
 
         binding.lineChart.animateX(
             800,
@@ -916,35 +920,40 @@ class ChartFragment : Fragment() {
 // =========================================================
 
 class CustomMarkerView(
-    context: android.content.Context,
+    context: Context,
     layoutResource: Int
 ) : MarkerView(context, layoutResource) {
 
     private val tvContent: TextView =
         findViewById(R.id.tvMarkerContent)
 
+    var dataType = ""
+
     override fun refreshContent(
         e: Entry,
         highlight: Highlight
     ) {
 
-        tvContent.text =
+        val value =
             if (e.y % 1 == 0f)
                 e.y.toInt().toString()
             else
                 "%.1f".format(e.y)
 
-        super.refreshContent(
-            e,
-            highlight
-        )
+        tvContent.text =
+            if (dataType == "Kelembapan Udara")
+                "$value%"
+            else
+                value
+
+        super.refreshContent(e, highlight)
     }
 
     override fun getOffset(): MPPointF {
-
         return MPPointF(
             -(width / 2f),
             -(height + 16f)
         )
+
     }
 }
