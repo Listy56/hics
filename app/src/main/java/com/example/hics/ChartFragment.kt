@@ -731,7 +731,7 @@ class ChartFragment : Fragment() {
                                                     .getValue(Float::class.java)
 
                                             "pH" ->
-                                                timeSnap.child("pH")
+                                                timeSnap.child("ph")
                                                     .getValue(Float::class.java)
 
                                             "Kelembapan Udara" ->

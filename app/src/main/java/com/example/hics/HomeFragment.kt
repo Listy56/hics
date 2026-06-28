@@ -120,7 +120,7 @@ class HomeFragment : Fragment() {
                 // ===== DATA =====
                 suhuAir = snapshot.child("dataStream/waterTemp").value.toString().toDoubleOrNull() ?: 0.0
                 suhuUdara = snapshot.child("dataStream/airTemp").value.toString().toDoubleOrNull() ?: 0.0
-                pH = snapshot.child("dataStream/pH").value.toString().toDoubleOrNull() ?: 0.0
+                pH = snapshot.child("dataStream/ph").value.toString().toDoubleOrNull() ?: 0.0
                 nutrisi = snapshot.child("dataStream/ppm").value.toString().toIntOrNull() ?: 0
                 level = snapshot.child("dataStream/waterLevel").value.toString().toDoubleOrNull() ?: 0.0
                 humidity = snapshot.child("dataStream/humidity").value.toString().toIntOrNull() ?: 0

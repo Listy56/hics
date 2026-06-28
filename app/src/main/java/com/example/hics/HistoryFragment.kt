@@ -927,7 +927,7 @@ class HistoryFragment : Fragment() {
                                                 timestamp = dateStr,
                                                 airTemp = hour.child("airTemp").value.toString(),
                                                 humidity = hour.child("humidity").value.toString(),
-                                                ph = hour.child("pH").value.toString(),
+                                                ph = hour.child("ph").value.toString(),
                                                 ppm = hour.child("ppm").value.toString(),
                                                 waterLevel = hour.child("waterLevel").value.toString(),
                                                 waterTemp = hour.child("waterTemp").value.toString()
