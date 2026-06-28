@@ -60,8 +60,15 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/input_bg"
                 android:hint="Nama Pengguna"
-                android:padding="12dp" />
-
+                android:inputType="textPersonName"
+                android:textColor="#000000"
+                android:textColorHint="#9E9E9E"
+                android:textCursorDrawable="@null"
+                android:textColorHighlight="#2196F3"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:padding="12dp"/>
             <!-- Button Lanjut -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSave"
