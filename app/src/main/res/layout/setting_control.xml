@@ -55,8 +55,9 @@
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:text="Hubungkan Device ID terlebih dahulu untuk menggunakan fitur Kontrol."
-                    android:textColor="#F57C00"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#F57C00"/>
             </LinearLayout>
 
         <!-- MODE -->
