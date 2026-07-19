@@ -21,6 +21,10 @@ class HistoryAdapter(
     var showAirTemp = true
     var showHumidity = true
     var showWaterLevel = true
+    var showWeather=true
+    var showForecastTemp=true
+    var showForecastHumidity=true
+    var showWind=true
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -47,6 +51,17 @@ class HistoryAdapter(
 
         val tvWaterLevel: TextView =
             view.findViewById(R.id.tvWaterLevel)
+        val tvWeather =
+            view.findViewById<TextView>(R.id.tvWeather)
+
+        val tvForecastTemp =
+            view.findViewById<TextView>(R.id.tvForecastTemp)
+
+        val tvForecastHumidity =
+            view.findViewById<TextView>(R.id.tvForecastHumidity)
+
+        val tvWind =
+            view.findViewById<TextView>(R.id.tvWind)
     }
 
     override fun onCreateViewHolder(
@@ -84,6 +99,13 @@ class HistoryAdapter(
             else
                 "${data.humidity}%"
         holder.tvWaterLevel.text = data.waterLevel
+        holder.tvWeather.text=data.weather
+
+        holder.tvForecastTemp.text=data.forecastTemp
+
+        holder.tvForecastHumidity.text=data.forecastHumidity
+
+        holder.tvWind.text=data.wind
 
         // =========================
         // TOTAL KOLOM
@@ -165,6 +187,29 @@ class HistoryAdapter(
             holder.tvWaterLevel,
             showWaterLevel,
             if (useDynamicWidth) 1f else 0f
+        )
+        setColumnVisibility(
+            holder.tvWeather,
+            showWeather,
+            if(useDynamicWidth)1f else 0f
+        )
+
+        setColumnVisibility(
+            holder.tvForecastTemp,
+            showForecastTemp,
+            if(useDynamicWidth)1f else 0f
+        )
+
+        setColumnVisibility(
+            holder.tvForecastHumidity,
+            showForecastHumidity,
+            if(useDynamicWidth)1f else 0f
+        )
+
+        setColumnVisibility(
+            holder.tvWind,
+            showWind,
+            if(useDynamicWidth)1f else 0f
         )
 
         // =========================

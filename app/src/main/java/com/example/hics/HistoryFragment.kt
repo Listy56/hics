@@ -62,6 +62,16 @@ class HistoryFragment : Fragment() {
     private lateinit var tvTotal: TextView
     private lateinit var progressBar: ProgressBar
 
+    private lateinit var cbWeather:CheckBox
+    private lateinit var cbForecastTemp:CheckBox
+    private lateinit var cbForecastHumidity:CheckBox
+    private lateinit var cbWind:CheckBox
+
+    private lateinit var headerWeather:TextView
+    private lateinit var headerForecastTemp:TextView
+    private lateinit var headerForecastHumidity:TextView
+    private lateinit var headerWind:TextView
+
     // RECYCLER
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: HistoryAdapter
@@ -162,6 +172,20 @@ class HistoryFragment : Fragment() {
 
         headerWaterLevel =
             view.findViewById(R.id.headerWaterLevel)
+        cbWeather=view.findViewById(R.id.cbWeather)
+
+        cbForecastTemp=view.findViewById(R.id.cbForecastTemp)
+
+        cbForecastHumidity=view.findViewById(R.id.cbForecastHumidity)
+
+        cbWind=view.findViewById(R.id.cbWind)
+        headerWeather=view.findViewById(R.id.headerWeather)
+
+        headerForecastTemp=view.findViewById(R.id.headerForecastTemp)
+
+        headerForecastHumidity=view.findViewById(R.id.headerForecastHumidity)
+
+        headerWind=view.findViewById(R.id.headerWind)
 
         // RECYCLER
 
@@ -237,14 +261,19 @@ class HistoryFragment : Fragment() {
         // =========================
         // FILTER CHECKBOX
         // =========================
-
         cbAll.isChecked = true
+
         cbPpm.isChecked = true
         cbPh.isChecked = true
         cbWaterTemp.isChecked = true
         cbAirTemp.isChecked = true
         cbHumidity.isChecked = true
         cbWaterLevel.isChecked = true
+
+        cbWeather.isChecked = true
+        cbForecastTemp.isChecked = true
+        cbForecastHumidity.isChecked = true
+        cbWind.isChecked = true
 
         cbAll.setOnCheckedChangeListener { _, isChecked ->
 
@@ -256,6 +285,10 @@ class HistoryFragment : Fragment() {
                 cbAirTemp.isChecked = true
                 cbHumidity.isChecked = true
                 cbWaterLevel.isChecked = true
+                cbWeather.isChecked = true
+                cbForecastTemp.isChecked = true
+                cbForecastHumidity.isChecked = true
+                cbWind.isChecked = true
             }
 
             updateColumnVisibility()
@@ -272,7 +305,11 @@ class HistoryFragment : Fragment() {
                     cbWaterTemp,
                     cbAirTemp,
                     cbHumidity,
-                    cbWaterLevel
+                    cbWaterLevel,
+                    cbWeather,
+                    cbForecastTemp,
+                    cbForecastHumidity,
+                    cbWind
                 ).count { it.isChecked }
 
                 if (totalChecked == 0) {
@@ -296,7 +333,11 @@ class HistoryFragment : Fragment() {
                             cbWaterTemp.isChecked &&
                             cbAirTemp.isChecked &&
                             cbHumidity.isChecked &&
-                            cbWaterLevel.isChecked
+                            cbWaterLevel.isChecked &&
+                            cbWeather.isChecked &&
+                            cbForecastTemp.isChecked &&
+                            cbForecastHumidity.isChecked &&
+                            cbWind.isChecked
 
                 cbAll.setOnCheckedChangeListener { _, checked ->
 
@@ -308,6 +349,10 @@ class HistoryFragment : Fragment() {
                         cbAirTemp.isChecked = true
                         cbHumidity.isChecked = true
                         cbWaterLevel.isChecked = true
+                        cbWeather.isChecked = true
+                        cbForecastTemp.isChecked = true
+                        cbForecastHumidity.isChecked = true
+                        cbWind.isChecked = true
                     }
 
                     updateColumnVisibility()
@@ -339,6 +384,13 @@ class HistoryFragment : Fragment() {
         cbWaterLevel.setOnCheckedChangeListener(
             checkboxListener
         )
+        cbWeather.setOnCheckedChangeListener(checkboxListener)
+
+        cbForecastTemp.setOnCheckedChangeListener(checkboxListener)
+
+        cbForecastHumidity.setOnCheckedChangeListener(checkboxListener)
+
+        cbWind.setOnCheckedChangeListener(checkboxListener)
 
         // =========================
         // RESET FILTER
@@ -354,7 +406,17 @@ class HistoryFragment : Fragment() {
 
             cbAll.isChecked = true
 
-            updateColumnVisibility()
+            cbPpm.isChecked = true
+            cbPh.isChecked = true
+            cbWaterTemp.isChecked = true
+            cbAirTemp.isChecked = true
+            cbHumidity.isChecked = true
+            cbWaterLevel.isChecked = true
+
+            cbWeather.isChecked = true
+            cbForecastTemp.isChecked = true
+            cbForecastHumidity.isChecked = true
+            cbWind.isChecked = true
 
             getHistoryData()
         }
@@ -407,6 +469,14 @@ class HistoryFragment : Fragment() {
 
             if (cbWaterLevel.isChecked)
                 headers.add("Water Level")
+            if (cbWeather.isChecked)
+                headers.add("Cuaca")
+            if (cbForecastTemp.isChecked)
+                headers.add("Prakiraan")
+            if (cbForecastHumidity.isChecked)
+                headers.add("RH BMKG")
+            if (cbWind.isChecked)
+                headers.add("Angin")
 
             writer.append(headers.joinToString(","))
             writer.append("\n")
@@ -435,6 +505,15 @@ class HistoryFragment : Fragment() {
 
                 if (cbWaterLevel.isChecked)
                     row.add(data.waterLevel)
+
+                if (cbWeather.isChecked)
+                    row.add(data.weather)
+                if (cbForecastTemp.isChecked)
+                    row.add(data.forecastTemp)
+                if (cbForecastHumidity.isChecked)
+                    row.add(data.forecastHumidity)
+                if (cbWind.isChecked)
+                    row.add(data.wind)
 
                 writer.append(row.joinToString(","))
                 writer.append("\n")
@@ -519,6 +598,14 @@ class HistoryFragment : Fragment() {
 
             if (cbWaterLevel.isChecked)
                 table.addCell("Water Level")
+            if (cbWeather.isChecked)
+                table.addCell("Cuaca")
+            if (cbForecastTemp.isChecked)
+                table.addCell("Prakiraan")
+            if (cbForecastHumidity.isChecked)
+                table.addCell("RH BMKG")
+            if (cbWind.isChecked)
+                table.addCell("Angin")
 
             for (data in listData) {
 
@@ -541,6 +628,14 @@ class HistoryFragment : Fragment() {
 
                 if (cbWaterLevel.isChecked)
                     table.addCell(data.waterLevel)
+                if (cbWeather.isChecked)
+                    table.addCell(data.weather)
+                if (cbForecastTemp.isChecked)
+                    table.addCell(data.forecastTemp)
+                if (cbForecastHumidity.isChecked)
+                    table.addCell(data.forecastHumidity)
+                if (cbWind.isChecked)
+                    table.addCell(data.wind)
             }
 
             document.add(table)
@@ -619,7 +714,10 @@ class HistoryFragment : Fragment() {
         if (cbAirTemp.isChecked) total++
         if (cbHumidity.isChecked) total++
         if (cbWaterLevel.isChecked) total++
-
+        if (cbWeather.isChecked) total++
+        if (cbForecastTemp.isChecked) total++
+        if (cbForecastHumidity.isChecked) total++
+        if (cbWind.isChecked) total++
         return total
     }
 
@@ -646,6 +744,16 @@ class HistoryFragment : Fragment() {
 
         adapter.showWaterLevel =
             cbWaterLevel.isChecked
+        adapter.showWeather=cbWeather.isChecked
+
+        adapter.showForecastTemp=
+            cbForecastTemp.isChecked
+
+        adapter.showForecastHumidity=
+            cbForecastHumidity.isChecked
+
+        adapter.showWind=
+            cbWind.isChecked
 
         var visibleColumn = 1
 
@@ -655,6 +763,10 @@ class HistoryFragment : Fragment() {
         if (cbAirTemp.isChecked) visibleColumn++
         if (cbHumidity.isChecked) visibleColumn++
         if (cbWaterLevel.isChecked) visibleColumn++
+        if (cbWeather.isChecked) visibleColumn++
+        if (cbForecastTemp.isChecked) visibleColumn++
+        if (cbForecastHumidity.isChecked) visibleColumn++
+        if (cbWind.isChecked) visibleColumn++
 
         val useWeight =
             visibleColumn <= 3
@@ -706,6 +818,29 @@ class HistoryFragment : Fragment() {
             headerWaterLevel,
             cbWaterLevel.isChecked,
             if (useWeight) 1f else 0f
+        )
+        setHeaderVisibility(
+            headerWeather,
+            cbWeather.isChecked,
+            if(useWeight)1f else 0f
+        )
+
+        setHeaderVisibility(
+            headerForecastTemp,
+            cbForecastTemp.isChecked,
+            if(useWeight)1f else 0f
+        )
+
+        setHeaderVisibility(
+            headerForecastHumidity,
+            cbForecastHumidity.isChecked,
+            if(useWeight)1f else 0f
+        )
+
+        setHeaderVisibility(
+            headerWind,
+            cbWind.isChecked,
+            if(useWeight)1f else 0f
         )
 
         val rvParams =
@@ -924,13 +1059,21 @@ class HistoryFragment : Fragment() {
 
                                         val model =
                                             HistoryModel(
+
                                                 timestamp = dateStr,
+
                                                 airTemp = hour.child("airTemp").value.toString(),
                                                 humidity = hour.child("humidity").value.toString(),
                                                 ph = hour.child("ph").value.toString(),
                                                 ppm = hour.child("ppm").value.toString(),
                                                 waterLevel = hour.child("waterLevel").value.toString(),
-                                                waterTemp = hour.child("waterTemp").value.toString()
+                                                waterTemp = hour.child("waterTemp").value.toString(),
+
+                                                weather = hour.child("weather").value.toString(),
+                                                forecastTemp = hour.child("forecastTemp").value.toString(),
+                                                forecastHumidity = hour.child("forecastHumidity").value.toString(),
+                                                wind = hour.child("wind").value.toString()
+
                                             )
 
                                         tempList.add(

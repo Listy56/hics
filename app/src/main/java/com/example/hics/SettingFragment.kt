@@ -15,6 +15,7 @@ class SettingFragment: Fragment() {
 
     private lateinit var monitoring: LinearLayout
     private lateinit var control: LinearLayout
+    private lateinit var calibration: LinearLayout
     private lateinit var device: LinearLayout
     private lateinit var account: LinearLayout
 
@@ -35,6 +36,7 @@ class SettingFragment: Fragment() {
 
         monitoring = view.findViewById(R.id.monitoring)
         control    = view.findViewById(R.id.control)
+        calibration = view.findViewById(R.id.calibration)
         device     = view.findViewById(R.id.device)
         account    = view.findViewById(R.id.account)
 
@@ -59,6 +61,18 @@ class SettingFragment: Fragment() {
             transaction.replace(R.id.mainFragment, fragment)
             transaction.addToBackStack(null)
             transaction.commit()
+        }
+        calibration.setOnClickListener {
+
+            val fragment = CalibrationFragment()
+
+            requireActivity()
+                .supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.mainFragment, fragment)
+                .addToBackStack(null)
+                .commit()
+
         }
 
         device.setOnClickListener {

@@ -231,6 +231,74 @@
                                     android:text="Ketersediaan Air"
                                     android:textColor="@drawable/chip_text_selector"
                                     android:textSize="12sp" />
+                                <Space
+                                    android:layout_width="6dp"
+                                    android:layout_height="wrap_content" />
+
+                                <CheckBox
+                                    android:id="@+id/cbWeather"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="34dp"
+                                    android:background="@drawable/bg_chip"
+                                    android:button="@null"
+                                    android:checked="true"
+                                    android:gravity="center"
+                                    android:minWidth="0dp"
+                                    android:paddingHorizontal="12dp"
+                                    android:text="Cuaca"
+                                    android:textColor="@drawable/chip_text_selector"
+                                    android:textSize="12sp" />
+                                <Space
+                                    android:layout_width="6dp"
+                                    android:layout_height="wrap_content" />
+
+                                <CheckBox
+                                    android:id="@+id/cbForecastTemp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="34dp"
+                                    android:background="@drawable/bg_chip"
+                                    android:button="@null"
+                                    android:checked="true"
+                                    android:gravity="center"
+                                    android:minWidth="0dp"
+                                    android:paddingHorizontal="12dp"
+                                    android:text="Prakiraan"
+                                    android:textColor="@drawable/chip_text_selector"
+                                    android:textSize="12sp" />
+                                <Space
+                                    android:layout_width="6dp"
+                                    android:layout_height="wrap_content" />
+
+                                <CheckBox
+                                    android:id="@+id/cbForecastHumidity"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="34dp"
+                                    android:background="@drawable/bg_chip"
+                                    android:button="@null"
+                                    android:checked="true"
+                                    android:gravity="center"
+                                    android:minWidth="0dp"
+                                    android:paddingHorizontal="12dp"
+                                    android:text="RH BMKG"
+                                    android:textColor="@drawable/chip_text_selector"
+                                    android:textSize="12sp" />
+                                <Space
+                                    android:layout_width="6dp"
+                                    android:layout_height="wrap_content" />
+
+                                <CheckBox
+                                    android:id="@+id/cbWind"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="34dp"
+                                    android:background="@drawable/bg_chip"
+                                    android:button="@null"
+                                    android:checked="true"
+                                    android:gravity="center"
+                                    android:minWidth="0dp"
+                                    android:paddingHorizontal="12dp"
+                                    android:text="Angin"
+                                    android:textColor="@drawable/chip_text_selector"
+                                    android:textSize="12sp" />
 
                             </LinearLayout>
 
@@ -477,6 +545,41 @@
                                 android:textColor="@android:color/white"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/headerWeather"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:minWidth="140dp"
+                                android:text="Cuaca"
+                                android:gravity="center"
+                                android:textColor="@android:color/white"/>
+
+                            <TextView
+                                android:id="@+id/headerForecastTemp"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:minWidth="120dp"
+                                android:text="Prakiraan"
+                                android:gravity="center"
+                                android:textColor="@android:color/white"/>
+
+                            <TextView
+                                android:id="@+id/headerForecastHumidity"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:minWidth="130dp"
+                                android:text="RH BMKG"
+                                android:gravity="center"
+                                android:textColor="@android:color/white"/>
+
+                            <TextView
+                                android:id="@+id/headerWind"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:minWidth="120dp"
+                                android:text="Angin"
+                                android:gravity="center"
+                                android:textColor="@android:color/white"/>
 
                         </LinearLayout>
 

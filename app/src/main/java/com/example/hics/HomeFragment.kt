@@ -138,7 +138,7 @@ class HomeFragment : Fragment() {
                 saveState()
 
                 // ===== UI =====
-                phTextView.text = pH.toString()
+                phTextView.text = String.format("%.1f", pH)
                 nutrisiTextView.text = nutrisi.toString()
                 humidityText.text = "$humidity%"
                 statusSwitch.text = if (isOn) "ON" else "OFF"
@@ -163,7 +163,7 @@ class HomeFragment : Fragment() {
                 baseWaterLevel.post {
                     val maxHeight = baseWaterLevel.height
                     val newHeight = (level * maxHeight) / 100.0
-                    waterLevelPercent.text = "$level%"
+                    waterLevelPercent.text = "${String.format("%.1f", level)}%"
                     animateWaterLevel(newHeight.toInt())
                 }
             }

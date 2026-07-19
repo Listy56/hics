@@ -126,7 +126,9 @@ class ChartFragment : Fragment() {
 
     data class WeatherData(
         val time: String,
+        val weather: String,
         val temp: String,
+        val humidity: String,
         val wind: String,
         val icon: Int
     )
@@ -173,11 +175,14 @@ class ChartFragment : Fragment() {
                             body ?: "NULL"
                         )
 
-                        val weatherList =
-                            parseBMKGWeather(body)
+                        val weatherList = parseBMKGWeather(body)
+
+// simpan forecast pertama ke Firebase
+                        if (weatherList.isNotEmpty()) {
+                            saveWeatherHistory(weatherList.first())
+                        }
 
                         requireActivity().runOnUiThread {
-
                             showWeather(weatherList)
                         }
 
@@ -253,6 +258,8 @@ class ChartFragment : Fragment() {
                     val desc =
                         item.optString("weather_desc")
 
+                    val humidity =
+                        item.optString("hu")
                     val icon =
                         getWeatherIcon(desc)
 
@@ -314,7 +321,9 @@ class ChartFragment : Fragment() {
                                     itemTime,
                                     WeatherData(
                                         time = timeLabel,
+                                        weather = desc,
                                         temp = "$suhu°",
+                                        humidity = "$humidity%",
                                         wind = "$wind km/h",
                                         icon = icon
                                     )
@@ -399,6 +408,31 @@ class ChartFragment : Fragment() {
             else ->
                 R.drawable.ic_weather_cloudy
         }
+    }
+    private fun saveWeatherHistory(weather: WeatherData) {
+
+        if (deviceID.isNullOrEmpty()) return
+
+        val cal = Calendar.getInstance()
+
+        val year = cal.get(Calendar.YEAR).toString()
+        val month = String.format("%02d", cal.get(Calendar.MONTH) + 1)
+        val day = String.format("%02d", cal.get(Calendar.DAY_OF_MONTH))
+        val hour = String.format("%02d", cal.get(Calendar.HOUR_OF_DAY))
+
+        val historyRef = FirebaseDatabase.getInstance()
+            .getReference("Hics")
+            .child(deviceID!!)
+            .child("history")
+            .child(year)
+            .child(month)
+            .child(day)
+            .child(hour)
+
+        historyRef.child("weather").setValue(weather.weather)
+        historyRef.child("forecastTemp").setValue(weather.temp)
+        historyRef.child("forecastHumidity").setValue(weather.humidity)
+        historyRef.child("wind").setValue(weather.wind)
     }
 
     // =========================================================

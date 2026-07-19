@@ -19,6 +19,9 @@ import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.widget.Button
+import android.widget.EditText
+import com.google.firebase.database.DatabaseReference
 
 class ControlFragment : Fragment() {
 
@@ -49,15 +52,18 @@ class ControlFragment : Fragment() {
 
     // NUTRISI UP
     private lateinit var nutrisiUpLayout: CardView
-    private lateinit var switchNutrisiUp: LinearLayout
-    private lateinit var circleNutrisiUp: View
-    private lateinit var statusNutrisiUp: TextView
+    private lateinit var edtNutrisiA: EditText
+    private lateinit var btnTambahA: Button
+    private lateinit var tvEstimasiA: TextView
+    private lateinit var tvStatusA: TextView
+
 
     // NUTRISI DOWN
     private lateinit var nutrisiDownLayout: CardView
-    private lateinit var switchNutrisiDown: LinearLayout
-    private lateinit var circleNutrisiDown: View
-    private lateinit var statusNutrisiDown: TextView
+    private lateinit var edtNutrisiB: EditText
+    private lateinit var btnTambahB: Button
+    private lateinit var tvEstimasiB: TextView
+    private lateinit var tvStatusB: TextView
 
     private var deviceID: String? = ""
     private var firebaseDatabase = FirebaseDatabase.getInstance()
@@ -67,8 +73,6 @@ class ControlFragment : Fragment() {
     private var pumpOn = false
     private var phUpOn = false
     private var phDownOn = false
-    private var nutrisiUpOn = false
-    private var nutrisiDownOn = false
     private lateinit var layoutWarning: LinearLayout
 
     private var online = false
@@ -110,15 +114,17 @@ class ControlFragment : Fragment() {
 
         // NUTRISI UP
         nutrisiUpLayout = view.findViewById(R.id.nutrisiUpLayout)
-        switchNutrisiUp = view.findViewById(R.id.switchNutrisiUp)
-        circleNutrisiUp = view.findViewById(R.id.circleNutrisiUp)
-        statusNutrisiUp = view.findViewById(R.id.statusNutrisiUp)
+        edtNutrisiA = view.findViewById(R.id.edtNutrisiA)
+        btnTambahA = view.findViewById(R.id.btnTambahA)
+        tvEstimasiA = view.findViewById(R.id.tvEstimasiA)
+        tvStatusA = view.findViewById(R.id.tvStatusA)
 
         // NUTRISI DOWN
         nutrisiDownLayout = view.findViewById(R.id.nutrisiDownLayout)
-        switchNutrisiDown = view.findViewById(R.id.switchNutrisiDown)
-        circleNutrisiDown = view.findViewById(R.id.circleNutrisiDown)
-        statusNutrisiDown = view.findViewById(R.id.statusNutrisiDown)
+        edtNutrisiB = view.findViewById(R.id.edtNutrisiB)
+        btnTambahB = view.findViewById(R.id.btnTambahB)
+        tvEstimasiB = view.findViewById(R.id.tvEstimasiB)
+        tvStatusB = view.findViewById(R.id.tvStatusB)
 
         layoutWarning = view.findViewById(R.id.layoutWarning)
 
@@ -130,6 +136,8 @@ class ControlFragment : Fragment() {
         Log.d("ControlFragment", "DeviceID: $deviceID")
 
         val baseFirebase = firebaseDatabase.getReference("Hics")
+        listenStatusNutrisiA(baseFirebase)
+        listenStatusNutrisiB(baseFirebase)
 
         // ================= GET DATA FIREBASE =================
         if (!deviceID.isNullOrEmpty()) {
@@ -160,13 +168,7 @@ class ControlFragment : Fragment() {
                                 snapshot.child("phDown")
                                     .value.toString().toBoolean()
 
-                            nutrisiUpOn =
-                                snapshot.child("nutrisiUp")
-                                    .value.toString().toBoolean()
 
-                            nutrisiDownOn =
-                                snapshot.child("nutrisiDown")
-                                    .value.toString().toBoolean()
                             saveLastState()
                             updateControlUI()
                             setControlEnabled(true)
@@ -345,7 +347,7 @@ class ControlFragment : Fragment() {
         }
 
 // ================= NUTRISI UP =================
-        switchNutrisiUp.setOnClickListener {
+        btnTambahA.setOnClickListener {
 
             if (!online) {
                 Toast.makeText(
@@ -356,33 +358,40 @@ class ControlFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            vibratePhone()
+            val volume = edtNutrisiA.text.toString().toIntOrNull()
 
-            nutrisiUpOn = !nutrisiUpOn
-            nutrisiUpSwitchUI(nutrisiUpOn)
+            if (volume == null || volume <= 0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Masukkan volume",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
 
-            baseFirebase.child(deviceID!!)
+            val durasi = volume * 1.4
+
+            // Tetap tampilkan volume dan estimasi
+            edtNutrisiA.setText(volume.toString())
+            tvEstimasiA.text = "Estimasi : ${durasi.toInt()} detik"
+
+            tvStatusA.text = "Mengirim..."
+
+            btnTambahA.isEnabled = false
+            edtNutrisiA.isEnabled = false
+
+            btnTambahA.alpha = 0.5f
+            edtNutrisiA.alpha = 0.5f
+
+            val control = baseFirebase.child(deviceID!!)
                 .child("control")
-                .child("nutrisiUp")
-                .setValue(nutrisiUpOn)
-                .addOnSuccessListener {
-                    saveLastState()
-                }
-                .addOnFailureListener {
+                .child("nutrisiA")
 
-                    nutrisiUpOn = !nutrisiUpOn
-                    nutrisiUpSwitchUI(nutrisiUpOn)
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Gagal mengubah Nutrisi Up",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            control.child("volume").setValue(volume)
+            control.child("start").setValue(true)
+            control.child("status").setValue("running")
         }
-
-// ================= NUTRISI DOWN =================
-        switchNutrisiDown.setOnClickListener {
+        btnTambahB.setOnClickListener {
 
             if (!online) {
                 Toast.makeText(
@@ -393,29 +402,38 @@ class ControlFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            vibratePhone()
+            val volume = edtNutrisiB.text.toString().toIntOrNull()
 
-            nutrisiDownOn = !nutrisiDownOn
-            nutrisiDownSwitchUI(nutrisiDownOn)
+            if (volume == null || volume <= 0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Masukkan volume",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
 
-            baseFirebase.child(deviceID!!)
+            val durasi = volume * 1.4
+
+            // Tetap tampilkan volume dan estimasi
+            edtNutrisiB.setText(volume.toString())
+            tvEstimasiB.text = "Estimasi : ${durasi.toInt()} detik"
+
+            tvStatusB.text = "Mengirim..."
+
+            btnTambahB.isEnabled = false
+            edtNutrisiB.isEnabled = false
+
+            btnTambahB.alpha = 0.5f
+            edtNutrisiB.alpha = 0.5f
+
+            val control = baseFirebase.child(deviceID!!)
                 .child("control")
-                .child("nutrisiDown")
-                .setValue(nutrisiDownOn)
-                .addOnSuccessListener {
-                    saveLastState()
-                }
-                .addOnFailureListener {
+                .child("nutrisiB")
 
-                    nutrisiDownOn = !nutrisiDownOn
-                    nutrisiDownSwitchUI(nutrisiDownOn)
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Gagal mengubah Nutrisi Down",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            control.child("volume").setValue(volume)
+            control.child("start").setValue(true)
+            control.child("status").setValue("running")
         }
         }
     // ================= MODE UI =================
@@ -514,55 +532,6 @@ class ControlFragment : Fragment() {
         }
     }
 
-    // ================= NUTRISI UP UI =================
-    private fun nutrisiUpSwitchUI(isOn: Boolean) {
-
-        switchNutrisiUp.post {
-
-            if (isOn) {
-
-                switchNutrisiUp.setBackgroundResource(R.drawable.bg_switch_on)
-
-                circleNutrisiUp.translationX =
-                    (switchNutrisiUp.width - circleNutrisiUp.width - 12).toFloat()
-
-                statusNutrisiUp.text = "ON"
-
-            } else {
-
-                switchNutrisiUp.setBackgroundResource(R.drawable.bg_switch_off)
-
-                circleNutrisiUp.translationX = 0f
-
-                statusNutrisiUp.text = "OFF"
-            }
-        }
-    }
-
-    // ================= NUTRISI DOWN UI =================
-    private fun nutrisiDownSwitchUI(isOn: Boolean) {
-
-        switchNutrisiDown.post {
-
-            if (isOn) {
-
-                switchNutrisiDown.setBackgroundResource(R.drawable.bg_switch_on)
-
-                circleNutrisiDown.translationX =
-                    (switchNutrisiDown.width - circleNutrisiDown.width - 12).toFloat()
-
-                statusNutrisiDown.text = "ON"
-
-            } else {
-
-                switchNutrisiDown.setBackgroundResource(R.drawable.bg_switch_off)
-
-                circleNutrisiDown.translationX = 0f
-
-                statusNutrisiDown.text = "OFF"
-            }
-        }
-    }
 
     private fun setControlEnabled(enable: Boolean) {
 
@@ -571,16 +540,13 @@ class ControlFragment : Fragment() {
         switchPump.isEnabled = true
         switchPhUp.isEnabled = true
         switchPhDown.isEnabled = true
-        switchNutrisiUp.isEnabled = true
-        switchNutrisiDown.isEnabled = true
+
 
         // Efek abu-abu saat offline
         switchMode.alpha = if (enable) 1f else 0.5f
         switchPump.alpha = if (enable) 1f else 0.5f
         switchPhUp.alpha = if (enable) 1f else 0.5f
         switchPhDown.alpha = if (enable) 1f else 0.5f
-        switchNutrisiUp.alpha = if (enable) 1f else 0.5f
-        switchNutrisiDown.alpha = if (enable) 1f else 0.5f
 
         pumpLayout.alpha = if (enable) 1f else 0.5f
         phUpLayout.alpha = if (enable) 1f else 0.5f
@@ -604,8 +570,6 @@ class ControlFragment : Fragment() {
             .putBoolean("pump", pumpOn)
             .putBoolean("phUp", phUpOn)
             .putBoolean("phDown", phDownOn)
-            .putBoolean("nutrisiUp", nutrisiUpOn)
-            .putBoolean("nutrisiDown", nutrisiDownOn)
             .apply()
     }
     private fun loadLastState() {
@@ -617,8 +581,6 @@ class ControlFragment : Fragment() {
         pumpOn = pref.getBoolean("pump", false)
         phUpOn = pref.getBoolean("phUp", false)
         phDownOn = pref.getBoolean("phDown", false)
-        nutrisiUpOn = pref.getBoolean("nutrisiUp", false)
-        nutrisiDownOn = pref.getBoolean("nutrisiDown", false)
     }
     private fun updateControlUI() {
 
@@ -651,9 +613,158 @@ class ControlFragment : Fragment() {
             pumpSwitchUI(pumpOn)
             phUpSwitchUI(phUpOn)
             phDownSwitchUI(phDownOn)
-            nutrisiUpSwitchUI(nutrisiUpOn)
-            nutrisiDownSwitchUI(nutrisiDownOn)
         }
+    }
+    private fun listenStatusNutrisiA(baseFirebase: DatabaseReference) {
+
+        if (deviceID.isNullOrEmpty()) return
+
+        baseFirebase.child(deviceID!!)
+            .child("control")
+            .child("nutrisiA")
+            .addValueEventListener(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    val status = snapshot.child("status")
+                        .getValue(String::class.java) ?: "idle"
+
+                    val volume = snapshot.child("volume")
+                        .getValue(Int::class.java) ?: 0
+
+                    when (status.lowercase()) {
+
+                        "running" -> {
+
+                            btnTambahA.isEnabled = false
+                            edtNutrisiA.isEnabled = false
+
+                            btnTambahA.alpha = 0.5f
+                            edtNutrisiA.alpha = 0.5f
+
+                            edtNutrisiA.setText(volume.toString())
+
+                            val durasi = volume * 1.4
+                            tvEstimasiA.text = "Estimasi : ${durasi.toInt()} detik"
+
+                            tvStatusA.text = "Sedang berjalan..."
+                        }
+
+                        "done" -> {
+
+                            btnTambahA.isEnabled = true
+                            edtNutrisiA.isEnabled = true
+
+                            btnTambahA.alpha = 1f
+                            edtNutrisiA.alpha = 1f
+
+                            edtNutrisiA.text.clear()
+                            tvEstimasiA.text = ""
+
+                            tvStatusA.text = "Selesai"
+                        }
+
+                        else -> {
+
+                            btnTambahA.isEnabled = true
+                            edtNutrisiA.isEnabled = true
+
+                            btnTambahA.alpha = 1f
+                            edtNutrisiA.alpha = 1f
+
+                            if (volume > 0) {
+                                edtNutrisiA.setText(volume.toString())
+
+                                val durasi = volume * 1.4
+                                tvEstimasiA.text = "Estimasi : ${durasi.toInt()} detik"
+                            } else {
+                                edtNutrisiA.text.clear()
+                                tvEstimasiA.text = ""
+                            }
+
+                            tvStatusA.text = "Idle"
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
+
+    private fun listenStatusNutrisiB(baseFirebase: DatabaseReference) {
+
+        if (deviceID.isNullOrEmpty()) return
+
+        baseFirebase.child(deviceID!!)
+            .child("control")
+            .child("nutrisiB")
+            .addValueEventListener(object : ValueEventListener {
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                    val status =
+                        snapshot.child("status")
+                            .getValue(String::class.java) ?: "idle"
+                    val volume = snapshot.child("volume")
+                        .getValue(Int::class.java) ?: 0
+
+                    when (status.lowercase()) {
+
+                        "running" -> {
+
+                            btnTambahB.isEnabled = false
+                            edtNutrisiB.isEnabled = false
+
+                            btnTambahB.alpha = 0.5f
+                            edtNutrisiB.alpha = 0.5f
+
+                            edtNutrisiB.setText(volume.toString())
+
+                            val durasi = volume * 1.4
+                            tvEstimasiB.text = "Estimasi : ${durasi.toInt()} detik"
+
+                            tvStatusB.text = "Sedang berjalan..."
+                        }
+
+                        "done" -> {
+
+                            btnTambahB.isEnabled = true
+                            edtNutrisiB.isEnabled = true
+
+                            btnTambahB.alpha = 1f
+                            edtNutrisiB.alpha = 1f
+
+                            edtNutrisiB.text.clear()
+                            tvEstimasiB.text = ""
+
+                            tvStatusB.text = "Selesai"
+                        }
+
+                        else -> {
+
+                            btnTambahB.isEnabled = true
+                            edtNutrisiB.isEnabled = true
+
+                            btnTambahB.alpha = 1f
+                            edtNutrisiB.alpha = 1f
+
+                            if (volume > 0) {
+                                edtNutrisiB.setText(volume.toString())
+
+                                val durasi = volume * 1.4
+                                tvEstimasiB.text = "Estimasi : ${durasi.toInt()} detik"
+                            } else {
+                                edtNutrisiB.text.clear()
+                                tvEstimasiB.text = ""
+                            }
+
+                            tvStatusB.text = "Idle"
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 
     // ================= GETAR =================

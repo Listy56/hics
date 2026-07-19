@@ -341,7 +341,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/nutrisiUpLayout"
                 android:layout_width="0dp"
-                android:layout_height="130dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="14dp"
@@ -365,35 +365,39 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:fontFamily="@font/poppinmedium"
-                        android:text="Penambah Nutrisi"
+                        android:text="Nutrisi A"
                         android:textColor="#08AAA3"
                         android:textSize="11sp" />
 
-                    <LinearLayout
-                        android:id="@+id/switchNutrisiUp"
-                        android:layout_width="50dp"
-                        android:layout_height="26dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/bg_switch_off"
-                        android:orientation="horizontal"
-                        android:padding="3dp">
-
-                        <View
-                            android:id="@+id/circleNutrisiUp"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:background="@drawable/bg_circle" />
-                    </LinearLayout>
+                    <EditText
+                        android:id="@+id/edtNutrisiA"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:hint="Masukkan mL"
+                        android:inputType="number" />
 
                     <TextView
-                        android:id="@+id/statusNutrisiUp"
+                        android:id="@+id/tvEstimasiA"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:fontFamily="@font/poppinsbold"
-                        android:text="-"
+                        android:text="Estimasi : 0 detik"
+                        android:textSize="11sp"/>
+
+                    <Button
+                        android:id="@+id/btnTambahA"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:text="Tambahkan"
+                        android:backgroundTint="#08AAA3"
+                        android:textColor="#FFFFFF"/>
+
+                    <TextView
+                        android:id="@+id/tvStatusA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Idle"
                         android:textColor="#08AAA3"
-                        android:textSize="13sp" />
+                        android:textStyle="bold"/>
 
                 </LinearLayout>
 
@@ -403,7 +407,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/nutrisiDownLayout"
                 android:layout_width="0dp"
-                android:layout_height="130dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="14dp"
@@ -427,37 +431,41 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:fontFamily="@font/poppinmedium"
-                        android:text="Penurun Nutrisi"
+                        android:text="Nutrisi B"
                         android:textColor="#08AAA3"
                         android:textSize="11sp" />
 
-                    <LinearLayout
-                        android:id="@+id/switchNutrisiDown"
-                        android:layout_width="50dp"
-                        android:layout_height="26dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/bg_switch_off"
-                        android:orientation="horizontal"
-                        android:padding="3dp">
-
-                        <View
-                            android:id="@+id/circleNutrisiDown"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:background="@drawable/bg_circle" />
-                    </LinearLayout>
+                    <EditText
+                        android:id="@+id/edtNutrisiB"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:hint="Masukkan mL"
+                        android:inputType="number"/>
 
                     <TextView
-                        android:id="@+id/statusNutrisiDown"
+                        android:id="@+id/tvEstimasiB"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:fontFamily="@font/poppinsbold"
-                        android:text="-"
-                        android:textColor="#08AAA3"
-                        android:textSize="13sp" />
+                        android:text="Estimasi : 0 detik"
+                        android:textSize="11sp"/>
 
-                </LinearLayout>
+                    <Button
+                        android:id="@+id/btnTambahB"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:text="Tambahkan"
+                        android:backgroundTint="#08AAA3"
+                        android:textColor="#FFFFFF"/>
+
+                    <TextView
+                        android:id="@+id/tvStatusB"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Idle"
+                        android:textColor="#08AAA3"
+                        android:textStyle="bold"/>
+                    </LinearLayout>
+
 
             </androidx.cardview.widget.CardView>
 
