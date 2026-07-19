@@ -85,6 +85,15 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:id="@+id/sensorRealTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:visibility="invisible"
+                        android:layout_marginTop="10dp"
+                        android:text="sensorRealTime"/>
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
@@ -161,19 +170,6 @@
                         android:text="Hasil Kalibrasi"
                         android:textStyle="bold"
                         android:textColor="@color/hijau_end"/>
-
-                    <TextView
-                        android:id="@+id/tvAverage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="Rata-rata Sensor : -"/>
-
-                    <TextView
-                        android:id="@+id/tvOffset"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Offset : -"/>
 
                     <TextView
                         android:id="@+id/tvReference"

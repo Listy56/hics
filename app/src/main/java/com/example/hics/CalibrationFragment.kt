@@ -182,9 +182,6 @@ class CalibrationFragment : Fragment() {
         tvStatus.text = "Mengirim perintah..."
 
         tvReference.text = "Referensi : $reference"
-        tvAverage.text = "Rata-rata Sensor : -"
-        tvOffset.text = "Offset : -"
-
         val data = HashMap<String, Any>()
 
         data["sensor"] = sensor
@@ -193,7 +190,6 @@ class CalibrationFragment : Fragment() {
         data["status"] = "waiting"
         data["progress"] = 0
         data["average"] = 0
-        data["offset"] = 0
         data["timestamp"] = ServerValue.TIMESTAMP
 
         database.updateChildren(data)
@@ -336,7 +332,6 @@ class CalibrationFragment : Fragment() {
 
                         progressCalibration.progress = 0
                         tvProgress.text = "0 %"
-
                     }
 
                     "waiting" -> {
