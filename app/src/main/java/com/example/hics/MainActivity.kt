@@ -12,112 +12,65 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.database.*
-import com.google.firebase.messaging.FirebaseMessaging
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var homeBt: LinearLayout
     private lateinit var chartBt: LinearLayout
     private lateinit var settingBt: LinearLayout
-
     private lateinit var imgHome: ImageView
     private lateinit var tvHome: TextView
-
     private lateinit var imgChart: ImageView
     private lateinit var tvChart: TextView
-
     private lateinit var imgSetting: ImageView
     private lateinit var tvSetting: TextView
-
     private lateinit var badgeNotif: TextView
     private lateinit var btnNotif: ImageView
 
     private var indexAcc: Int = -1
 
     private val firebaseDatabase = FirebaseDatabase.getInstance()
-
     private var currentFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        NotificationHelper.createChannel(this)
-
-        // ================= IZIN NOTIF =================
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-
-            if (
-                ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    100
-                )
-            }
-        }
-
-        // ================= FCM TOKEN =================
-        FirebaseMessaging.getInstance().token
-            .addOnSuccessListener {
-
-                Log.d("FCM_TOKEN", it)
-
-            }
-
         val root = findViewById<View>(R.id.main)
 
-        // fade in
+        // animasi fade in
         root.alpha = 0f
-        root.animate()
-            .alpha(1f)
-            .setDuration(300)
-            .start()
+        root.animate().alpha(1f).setDuration(300).start()
 
         window.statusBarColor = getColor(R.color.hijau_start)
         window.navigationBarColor = getColor(R.color.white)
 
-        // ================= INIT VIEW =================
+        // init view
         homeBt = findViewById(R.id.homeBt)
         chartBt = findViewById(R.id.chartBt)
         settingBt = findViewById(R.id.settingBt)
-
         imgHome = findViewById(R.id.imgHome)
         tvHome = findViewById(R.id.tvHome)
-
         imgChart = findViewById(R.id.imgChart)
         tvChart = findViewById(R.id.tvChart)
-
         imgSetting = findViewById(R.id.imgSetting)
         tvSetting = findViewById(R.id.tvSetting)
-
         badgeNotif = findViewById(R.id.badge_notif)
         btnNotif = findViewById(R.id.btn_notif)
 
-        // ================= SESSION =================
+        //  AMBIL INDEX DARI SESSION
         val accPref = getSharedPreferences("ACCOUNT", MODE_PRIVATE)
-
-        val isLogin = accPref.getBoolean("isLogin", false)
         indexAcc = accPref.getInt("index", -1)
+        //cek pengambilan index
+        //Toast.makeText(this, "Index di Main: $indexAcc", Toast.LENGTH_LONG).show()
 
-        if (!isLogin || indexAcc == -1) {
-
-            Toast.makeText(
-                this,
-                "Session tidak ditemukan, silakan login ulang",
-                Toast.LENGTH_SHORT
-            ).show()
-
+        //  VALIDASI SESSION
+        if (indexAcc == -1) {
+            Toast.makeText(this, "Session tidak ditemukan, silakan login ulang", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
@@ -127,59 +80,60 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("MainActivity", "indexAcc: $indexAcc")
 
-        // ================= AMBIL DATA USER =================
+        // AMBIL DATA USER BERDASARKAN INDEX
         accFirebase.child("user_$indexAcc")
             .addValueEventListener(object : ValueEventListener {
-
                 override fun onDataChange(snapshot: DataSnapshot) {
-
                     if (snapshot.exists()) {
 
-                        val id = snapshot.child("id")
-                            .value?.toString() ?: ""
+                        val id = snapshot.child("id").value?.toString() ?: ""
 
-                        // simpan session
-                        getSharedPreferences("ACCOUNT", MODE_PRIVATE)
-                            .edit()
+                        getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
                             .putString("deviceID", id)
                             .putInt("index", indexAcc)
-                            .putBoolean("isLogin", true)
                             .apply()
 
-                        // load notif
-                        loadNotifications(id)
-
                     } else {
-
-                        getSharedPreferences("ACCOUNT", MODE_PRIVATE)
-                            .edit()
+                        getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
                             .putString("deviceID", "")
                             .putInt("index", -1)
-                            .putBoolean("isLogin", false)
                             .apply()
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Error: ${error.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@MainActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
                 }
             })
 
-        // ================= DEFAULT FRAGMENT =================
+        //  NOTIF DUMMY
+        lifecycleScope.launch {
+            while (true) {
+                val notif = (0..20).random()
+
+                if (notif == 0) {
+                    badgeNotif.visibility = View.GONE
+                } else {
+                    badgeNotif.visibility = View.VISIBLE
+                    badgeNotif.text = notif.toString()
+                }
+
+                delay(2000)
+            }
+        }
+
+        btnNotif.setOnClickListener {
+            startActivity(Intent(this, NotifActivity::class.java))
+        }
+
+        // DEFAULT FRAGMENT
         if (savedInstanceState == null) {
-
             currentFragment = HomeFragment()
-
             supportFragmentManager.beginTransaction()
                 .add(R.id.mainFragment, currentFragment!!)
                 .commit()
         }
 
-        // ================= BOTTOM NAV =================
         homeBt.setOnClickListener {
             replaceFragment(HomeFragment(), 0)
         }
@@ -193,65 +147,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ================= LOAD NOTIF (FIX NO SPAM) =================
-    private fun loadNotifications(deviceID: String) {
-
-        firebaseDatabase.getReference("Hics")
-            .child(deviceID)
-            .child("notifications")
-            .addValueEventListener(object : ValueEventListener {
-
-                override fun onDataChange(snapshot: DataSnapshot) {
-
-                    var unreadCount = 0
-
-                    for (data in snapshot.children) {
-
-                        val isRead = data.child("isRead")
-                            .getValue(Boolean::class.java) ?: false
-
-                        if (!isRead) unreadCount++
-                    }
-
-                    // ✅ hanya badge (tidak tampilkan notif lagi)
-                    if (unreadCount > 0) {
-                        badgeNotif.visibility = View.VISIBLE
-                        badgeNotif.text = unreadCount.toString()
-                    } else {
-                        badgeNotif.visibility = View.GONE
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            })
-
-        // ================= CLICK NOTIF =================
-        btnNotif.setOnClickListener {
-
-            firebaseDatabase.getReference("Hics")
-                .child(deviceID)
-                .child("notifications")
-                .get()
-                .addOnSuccessListener { snapshot ->
-
-                    for (data in snapshot.children) {
-                        data.ref.child("isRead").setValue(true)
-                    }
-
-                    startActivity(
-                        Intent(this@MainActivity, NotifActivity::class.java)
-                    )
-                }
-        }
-    }
-
-    // ================= REPLACE FRAGMENT =================
     private fun replaceFragment(fragment: Fragment, mode: Int) {
-
         val transaction = supportFragmentManager.beginTransaction()
 
         when (mode) {
-
             0 -> {
                 imgHome.setImageResource(R.drawable.home_green)
                 tvHome.setTextColor(resources.getColor(R.color.hijau))

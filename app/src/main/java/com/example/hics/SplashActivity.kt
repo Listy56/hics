@@ -28,7 +28,6 @@ class SplashActivity : AppCompatActivity() {
         val smooth = AccelerateDecelerateInterpolator()
 
         logo.post {
-
             // initial state
             logo.alpha = 0f
             title.alpha = 0f
