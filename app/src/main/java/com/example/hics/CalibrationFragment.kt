@@ -85,6 +85,16 @@ class CalibrationFragment : Fragment() {
             .child("calibration")
 
         spSensor = view.findViewById(R.id.spSensor)
+
+        val sensorAdapter = ArrayAdapter(
+            requireContext(),
+            R.layout.spinner_item_black,
+            arrayOf("pH", "PPM")
+        )
+        sensorAdapter.setDropDownViewResource(R.layout.spinner_item_black)
+
+        spSensor.adapter = sensorAdapter
+
         spReference = view.findViewById(R.id.spReference)
 
         btnCalibration = view.findViewById(R.id.btnCalibration)
@@ -105,7 +115,8 @@ class CalibrationFragment : Fragment() {
         spReference.visibility = View.GONE
 
         initSpinner()
-        listenCalibration()
+        resetCalibrationOnEntry()
+//        listenCalibration()
 
         btnCalibration.setOnClickListener {
             startCalibration()
@@ -153,6 +164,36 @@ class CalibrationFragment : Fragment() {
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+    }
+
+    private fun resetCalibrationOnEntry() {
+
+        resetPhCalibrationState()   // reset phSamples, phStepIndex, awaitingNextPhStep
+
+        btnCalibration.isEnabled = false
+        btnCancel.isEnabled = false
+        spSensor.isEnabled = false
+        tvStatus.text = "Menyiapkan..."
+        progressCalibration.progress = 0
+        tvProgress.text = "0 %"
+
+        val resetData = HashMap<String, Any?>()
+        resetData["command"] = "idle"
+        resetData["status"] = "idle"
+        resetData["progress"] = 0
+        resetData["average"] = 0
+        resetData["currentData"] = 0
+        resetData["rawData"] = null
+
+        database.updateChildren(resetData)
+            .addOnCompleteListener {
+                listenCalibration()   // baru pasang listener SETELAH reset selesai
+
+                if (!it.isSuccessful) {
+                    resetCalibrationUIEnabled()
+                    tvStatus.text = "Siap dikalibrasi"
+                }
             }
     }
 
