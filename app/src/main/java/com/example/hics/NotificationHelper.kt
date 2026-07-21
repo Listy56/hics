@@ -108,23 +108,15 @@ object NotificationHelper {
                 .child(deviceID)
                 .child("notifications")
 
-        notifRoot.get().addOnSuccessListener { snapshot ->
+        val notifRef = notifRoot.push()
 
-            val nextIndex =
-                snapshot.childrenCount.toInt()
+        val notif = hashMapOf(
+            "title" to title,
+            "message" to message,
+            "time" to System.currentTimeMillis(),
+            "isRead" to false
+        )
 
-            val notifRef =
-                notifRoot.child(nextIndex.toString())
-
-            val notif = hashMapOf(
-                "title" to title,
-                "message" to message,
-                "time" to System.currentTimeMillis(),
-                "isRead" to false
-            )
-
-            notifRef.setValue(notif)
-
-        }
+        notifRef.setValue(notif)
     }
 }

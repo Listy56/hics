@@ -93,7 +93,32 @@ class MainActivity : AppCompatActivity() {
                             .putInt("index", indexAcc)
                             .apply()
 
+                        // ================= BADGE NOTIF =================
+                        firebaseDatabase
+                            .getReference("Hics")
+                            .child(id)
+                            .child("notifications")
+                            .addValueEventListener(object : ValueEventListener {
+
+                                override fun onDataChange(snapshot: DataSnapshot) {
+
+                                    val count = snapshot.childrenCount.toInt()
+
+                                    if (count == 0) {
+                                        badgeNotif.visibility = View.GONE
+                                    } else {
+                                        badgeNotif.visibility = View.VISIBLE
+                                        badgeNotif.text = count.toString()
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+
+                                }
+                            })
+
                     } else {
+
                         getSharedPreferences("ACCOUNT", MODE_PRIVATE).edit()
                             .putString("deviceID", "")
                             .putInt("index", -1)
@@ -105,22 +130,6 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
                 }
             })
-
-        //  NOTIF DUMMY
-        lifecycleScope.launch {
-            while (true) {
-                val notif = (0..20).random()
-
-                if (notif == 0) {
-                    badgeNotif.visibility = View.GONE
-                } else {
-                    badgeNotif.visibility = View.VISIBLE
-                    badgeNotif.text = notif.toString()
-                }
-
-                delay(2000)
-            }
-        }
 
         btnNotif.setOnClickListener {
             startActivity(Intent(this, NotifActivity::class.java))
