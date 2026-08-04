@@ -16,6 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.firebase.database.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +41,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val bottom = findViewById<View>(R.id.bottom)
+
+        ViewCompat.setOnApplyWindowInsetsListener(bottom) { view, insets ->
+            val bottomInset = insets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom
+
+            view.setPadding(
+                view.paddingLeft,
+                view.paddingTop,
+                view.paddingRight,
+                bottomInset + (12 * resources.displayMetrics.density).toInt()
+            )
+
+            insets
+        }
 
         val root = findViewById<View>(R.id.main)
 
